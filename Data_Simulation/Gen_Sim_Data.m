@@ -1,5 +1,4 @@
- 
-clear all
+ clear all
 %% Parameters 
  
  P = 116;
@@ -46,3 +45,6 @@ clear all
      corr(n,:,:) = normrnd(B*diag(C(:,n))*B',sigma_corr);
      
  end
+ 
+ save('Simulated_Data.mat','B','C','Y','W','corr')
+ 

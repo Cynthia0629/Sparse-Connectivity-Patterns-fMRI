@@ -33,8 +33,7 @@ def gradient_descent_runner(points, starting_b, starting_m, learning_rate, num_i
     for i in range(num_iterations):
         b.append(step_gradient(b[i-1], m[i-1], array(points), learning_rate)[0])
         m.append(step_gradient(b[i-1], m[i-1], array(points), learning_rate)[1])
-        print "After {0} iterations b = {1}, m = {2}, error = {3}".format(i, b[i]                                                                   , m[i],compute_error_for_line_given_points(b[i],m[i], points))
-        
+        print "After {0} iterations b = {1}, m = {2}, error = {3}".format(i, b[i], m[i],compute_error_for_line_given_points(b[i],m[i], points))
         err.append(compute_error_for_line_given_points(b[i],m[i], points))
     return [b, m, err] 
 
