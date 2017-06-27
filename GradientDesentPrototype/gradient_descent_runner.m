@@ -1,20 +1,26 @@
-function [B,C,W] = gradient_descent_runner(corr,B_init,C_init,W_init,Y,lambda,lambda_1,lambda_2,lr1,lr2)
+function [B,C,W] = gradient_descent_runner(corr,B_init,C_init,W_init,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,lr2)
 %%runs gradient descent using alternating minimisation
 
 %Initilise
-num_iter =1000;
+num_iter =300;
 B_old = B_init;
 C_old = C_init;
 W_old = W_init;
 thresh = 100;
 
 %Iterate
-figure; hold on
+err =[];
+plot(0,0)
+title('Graident Descent Run ')
+xlabel('Number of iterations')
+ylabel('Value of obejctive function')
 for i = 1:num_iter
-    err = error_compute(corr,B_old,C_old,Y,W_old,lambda,lambda_1,lambda_2);
-    fprintf('At iteration %d || Error: %f ',i,err)
-    plot(i,err);
-    [B,C,W] = step_gradient(corr,B_old,C_old,W_old,Y,lambda,lambda_1,lambda_2,lr1,lr2); 
+    err= horzcat(err,error_compute(corr,B_old,C_old,Y,W_old,lambda,lambda_1,lambda_2,lambda_3));
+    fprintf(' At iteration %d || Error: %f \n',i,err(i))
+    plot(1:i,err,'b');
+    hold on
+    drawnow;
+    [B,C,W] = step_gradient(corr,B_old,C_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,lr2); 
     B_old = B;
     C_old = C;
     W_old =W;
@@ -22,5 +28,5 @@ for i = 1:num_iter
         break;
     end
 end
-hold off
+
 end
