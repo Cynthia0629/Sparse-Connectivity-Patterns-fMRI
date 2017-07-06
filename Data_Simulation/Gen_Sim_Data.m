@@ -14,10 +14,10 @@
  sigma_C = 0.01*ones(K,N);
  mu_C = ones(K,N);
  
- sigma_corr = ones(P,P);
+ sigma_corr = 0.5*ones(P,P);
  sigma_y = ones(N,1);
  
- sigma_B = 0.05* ones(P,K);
+ sigma_B = 0.2* ones(P,K);
  mu_B = zeros(P,K);
  
  %% Initialisations
