@@ -14,7 +14,7 @@
  sigma_C = 0.01*ones(K,N);
  mu_C = ones(K,N);
  
- sigma_corr = 0.5*ones(P,P);
+ sigma_corr = 0.01*ones(P,P);
  sigma_y = ones(N,1);
  
  sigma_B = 0.2* ones(P,K);
@@ -48,4 +48,3 @@ for n = 1:N
 end
  
 save('Simulated_Data.mat','B','C','Y','W','corr')
- 

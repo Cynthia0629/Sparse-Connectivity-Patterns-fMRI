@@ -18,7 +18,7 @@ num_iter = 100;
 lr1 = 0.0002;
 lr2 = 0.0001;
 lambda = 0.1;
-lambda_1 = 5;
+lambda_1 = 2;
 lambda_2 =0.1;
 lambda_3 = 0.1;
 
