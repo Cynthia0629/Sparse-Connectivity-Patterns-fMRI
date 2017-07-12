@@ -27,12 +27,12 @@ for i = 1:num_iter_max
     signum_B = signum_B + r.*k;
 
     B_upd = B - lr1*(grad_B + lambda_1* signum_B);
-    lr1 = lr1*0.1;
+    lr1 = lr1*0.3;
     B = B_upd;
     if (i>1) && (abs(err(i)-err(i-1))< 10e-01) && err(i)<= err(i-1)      
         break;
     end
-     B_upd = normc(B_upd);
+    B_upd = normc(B_upd);
 end
 %% C update
 
@@ -40,7 +40,7 @@ end
 C_upd = zeros(size(C));
 for m = 1:n
    
-    H = (B_upd'*B_upd).^2 + lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd));
+    H = 2*((B_upd'*B_upd).^2 + lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
     Corr_mat = reshape(corr(m,:,:),[size(corr,2),size(corr,3)]);
     M = -2*(B_upd'*Corr_mat*B_upd);
     f = diag(M) -2*lambda*Y(m)*W;

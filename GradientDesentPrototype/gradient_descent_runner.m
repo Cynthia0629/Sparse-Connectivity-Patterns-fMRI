@@ -2,11 +2,11 @@ function [B,C,W] = gradient_descent_runner(corr,B_init,C_init,W_init,Y,lambda,la
 %%runs gradient descent using alternating minimisation
 
 %Initilise
-num_iter =300;
+num_iter =1000;
 B_old = B_init;
 C_old = C_init;
 W_old = W_init;
-thresh = 100;
+thresh = 10e-06;
 
 %Iterate
 err =[];
@@ -25,7 +25,7 @@ for i = 1:num_iter
     B_old = B;
     C_old = C;
     W_old =W;
-    if (err < thresh)
+    if (i>1 && abs(err(i)-err(i-1)) < thresh)
         break;
     end
 end

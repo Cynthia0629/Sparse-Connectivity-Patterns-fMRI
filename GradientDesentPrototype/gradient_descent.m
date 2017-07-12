@@ -15,16 +15,16 @@ W_init = rand(size(W));
 % W_init = W;
 
 num_iter = 100;
-lr1 = 0.0002;
+lr1 = 0.0003;
 lr2 = 0.0001;
-lambda = 0.1;
-lambda_1 = 5;
-lambda_2 =0.1;
-lambda_3 = 0.1;
+lambda = 1/0.35;
+lambda_1 = 2.3;
+lambda_2 =1/0.35;
+lambda_3 = 0.5/0.35;
 
 [B_gd,C_gd,W_gd] = gradient_descent_runner(corr,B_init,C_init,W_init,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,lr2);
 
-B_thresh = B_gd.*(B_gd<0.01*(min(min(B_gd)))) + B_gd.*(B_gd>0.05*(max(max(B_gd))));
+B_thresh = B_gd.*(B_gd<0.01*(min(min(B_gd)))) + B_gd.*(B_gd>0.01*(max(max(B_gd))));
 
 figure; subplot(1,2,1);
 colormap('hot')
@@ -38,4 +38,4 @@ imagesc(B_thresh)
 colorbar;
 title('Recovered connections matrix')
 
-% save('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Results/workspace2.mat')
+save('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/workspace_qp1.mat')
