@@ -4,7 +4,7 @@
  P = 116;
  N = 60 ;
  K = 4;
- p = 2;
+ p = 10;
  net_ind_1 = randperm(P) ;
  net_ind = reshape(net_ind_1(1:end-p*4),[(P-p*4)/K,K]);
 
@@ -14,7 +14,7 @@
  sigma_C = 4*ones(K,N);
  mu_C = zeros(K,N);
  
- sigma_corr =0.1*ones(P,P);
+ sigma_corr =0.5*ones(P,P);
  sigma_y = ones(N,1);
  
  sigma_B = 0.2* ones(P,K);
