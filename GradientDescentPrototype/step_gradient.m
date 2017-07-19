@@ -14,6 +14,9 @@ for i = 1:num_iter_max
     fprintf('\n B update iteration %d || error: %f ',i,err(i));
     
     plot(1:i,err,'r')
+    title('Algorithmic run')
+    xlabel('Iteration number')
+    ylabel('Objective value')
     drawnow;
     for n = 1:size(corr,1)
         A_n = diag(C(:,n));
