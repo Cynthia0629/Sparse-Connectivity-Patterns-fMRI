@@ -1,7 +1,7 @@
 clearvars -except n
 close all
 
-load('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Simulated_Data.mat')
+load('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Real_Data_SRSTotal.mat')
 
 %% Initialising parameters
 
@@ -20,10 +20,10 @@ W_init = rand(n,1);
 num_iter = 100;
 lr1 = 0.0001;
 lr2 = 0.0001;
-lambda = 1;
-lambda_1 = 2;
-lambda_2 =1;
-lambda_3 =1;
+lambda = 0.1;
+lambda_1 =0.1;
+lambda_2 =0.1;
+lambda_3 =0.1;
 
 [B_gd,C_gd,W_gd] = gradient_descent_runner(corr,B_init,C_init,W_init,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,lr2);
 
@@ -49,5 +49,5 @@ colorbar;
 title('Coefficients matrix')
 
 plot_qual_res(B_gd,C_gd)
-str1 = strcat('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/ADOS_runs/workspace_qp_',num2str(n),'_net.mat');
+str1 = strcat('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/SRS_CA_runs/workspace_qp_s_0.1_',num2str(n),'_net.mat');
 save(str1)
