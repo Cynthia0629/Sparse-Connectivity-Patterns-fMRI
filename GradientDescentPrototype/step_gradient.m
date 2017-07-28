@@ -30,7 +30,7 @@ for i = 1:num_iter_max
     signum_B = signum_B + r.*k;
 
     B_upd = B - lr1*(grad_B + lambda_1* signum_B);
-    lr1 = lr1*0.09;
+    lr1 = lr1*0.5;
     B = B_upd;
     if (i>1) && (abs(err(i)-err(i-1))< 10e-06) && err(i)<= err(i-1)      
         break;

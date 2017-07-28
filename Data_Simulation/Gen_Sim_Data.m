@@ -2,7 +2,7 @@
 %% Parameters 
  
  P = 116;
- N = 60 ;
+ N = 130 ;
  K = 4;
  p = 10;
  net_ind_1 = randperm(P) ;
@@ -14,7 +14,7 @@
  sigma_C = 4*ones(K,N);
  mu_C = zeros(K,N);
  
- sigma_corr =0.5*ones(P,P);
+ sigma_corr =0.8*ones(P,P);
  sigma_y = ones(N,1);
  
  sigma_B = 0.2* ones(P,K);

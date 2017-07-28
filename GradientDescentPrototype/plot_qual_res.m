@@ -9,7 +9,7 @@ for i= 1:size(B_gd,2)
  c(i) = norm(C_gd(i,:));
     
 end
-
+b.^2.*c
 figure;
 plot(1:i,b,'r')
 hold on;
