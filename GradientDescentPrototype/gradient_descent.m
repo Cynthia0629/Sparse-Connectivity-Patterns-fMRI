@@ -8,7 +8,7 @@ load('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivi
 % B_init = rand(size(B));
 % [m,n] = size(B);
 m= 116;
-B_init = 1-2*rand(m,n);
+B_init = -1+2*rand(m,n);
 % C_init = rand(size(C));
 C_init = rand(n,size(Y,1));
 % W_init = rand(size(W));
@@ -18,7 +18,7 @@ W_init = rand(n,1);
 % W_init = W;
 
 num_iter = 100;
-lr1 = 0.00001;
+lr1 = 0.001;
 lr2 = 0.0001;
 lambda = 1;
 lambda_1 =2;

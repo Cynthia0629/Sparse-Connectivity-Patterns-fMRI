@@ -21,7 +21,12 @@ for i = 1:num_iter
     plot(1:i,err,'b');
     hold on;
     drawnow;
-    [B,C,W] = step_gradient(corr,B_old,C_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,lr2); 
+    if (i<10)
+        [B,C,W] = step_gradient(corr,B_old,C_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,0.0001,lr2); 
+    else 
+        [B,C,W] = step_gradient(corr,B_old,C_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,lr2); 
+    
+    end
     B_old = B;
     C_old = C;
     W_old =W;
