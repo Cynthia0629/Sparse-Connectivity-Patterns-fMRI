@@ -1,14 +1,16 @@
 clearvars -except n
 close all
 
-load('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Real_Data_SRSTotal.mat')
+load('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Real_Data_SRSTotal_sub.mat')
 
 %% Initialising parameters
 
 % B_init = rand(size(B));
 % [m,n] = size(B);
 m= 116;
-B_init = -1+2*rand(m,n);
+%B_init = -1+2*rand(m,n);
+[V,D] = eig(reshape(mean(corr,1),[116,116]));
+B_init = V(:,1:n);
 % C_init = rand(size(C));
 C_init = rand(n,size(Y,1));
 % W_init = rand(size(W));
