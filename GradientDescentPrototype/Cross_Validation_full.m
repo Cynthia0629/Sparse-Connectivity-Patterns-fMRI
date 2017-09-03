@@ -1,11 +1,14 @@
-clearvars -except n
+clearvars 
 close all
 
+n =10;
+fold = 5;
+
 st = '/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/ADOS_CV';
-load(strcat(st,'/data.mat'))
+load(strcat(st,'/data_',num2str(fold),'.mat'))
 fprintf(st)
 fprintf('\n')
-n =10;
+
 %% Initialising parameters
 for i = 1: size(Y_train,2)
     m= 116;
@@ -28,7 +31,7 @@ for i = 1: size(Y_train,2)
     [B_gd{i},C_gd{i},W_gd{i}] = gradient_descent_runner(corr_train{i},B_init,C_init,W_init,Y_train{i},lambda,lambda_1,lambda_2,lambda_3,lr1,lr2);
 
     B_thresh{i} = B_gd{i}.*(B_gd{i}<0.1*(min(min(B_gd{i})))) + B_gd{i}.*(B_gd{i}>0.1*(max(max(B_gd{i}))));
-    str1 = strcat(st,'/workspace_',num2str(n),'_net');
+    str1 = strcat(st,'/workspace_',num2str(n),'_net',num2str(fold));
     str2 = strcat(str1,'.mat');
     save(str2)
 end
@@ -49,5 +52,5 @@ for i = 1:size(B_thresh,2)
     
 end
 
-str2  = strcat(str1,'_test.mat');
+str2  = strcat(str1,'_test',num2str(fold),'.mat');
 save(str2)

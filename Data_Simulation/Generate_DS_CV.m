@@ -2,10 +2,11 @@ clearvars
 close all
 
 load('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Real_Data_ADOS_sub.mat')
+fold = 10;
 
-indices = crossvalind('Kfold',Y,10);
+indices = crossvalind('Kfold',Y,fold);
 
-for i = 1:10
+for i = 1:fold
     test = (indices == i); train = ~test;
     Y_train{i} = Y(train);
     Y_test{i} = Y(test);
@@ -13,4 +14,5 @@ for i = 1:10
     corr_test{i} = corr(test,:,:);
 end
 
-save('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/ADOS_CV/data.mat')
+str1  = strcat('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/ADOS_CV/data_',num2str(fold),'.mat');
+save(str1)
