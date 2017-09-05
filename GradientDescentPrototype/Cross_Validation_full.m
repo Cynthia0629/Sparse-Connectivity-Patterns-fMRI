@@ -1,7 +1,7 @@
 clearvars 
 close all
 
-n =10;
+n =8;
 fold = 5;
 
 st = '/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/ADOS_CV';
@@ -44,7 +44,7 @@ load(strcat(st,'/data.mat'))
 
 for i = 1:size(B_thresh,2)
     
-    C_gd_test{i} = Compute_test(B_thresh{i},corr_test{i});
+    C_gd_test{i} = quad_estimate_C(B_gd{i},lambda_2,corr_test{i});
     Y_obt_test{i} = C_gd_test{i}'*W_gd{i};
     Y_obt_train{i} = C_gd{i}'*W_gd{i};
     error_test(i) = norm(Y_obt_test{i}-Y_test{i},'fro')/size(Y_test{i},1);

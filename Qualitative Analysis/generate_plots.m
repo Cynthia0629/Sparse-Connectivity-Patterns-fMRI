@@ -15,7 +15,7 @@ for i = 1:size(B_gd,2)
     colorbar
     title('coefficients matrix')
     
-    img_filename  = strcat(st,'/figure_conn_',num2str(i),'.jpg');
+    img_filename  = strcat(str,'/figure_conn_',num2str(i),'.jpg');
     saveas(figure1,img_filename)
 
 end
