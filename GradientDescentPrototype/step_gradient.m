@@ -56,45 +56,6 @@ for m = 1:n
     C_upd(:,m) = c_m;
 end
 
-% err =[];
-% 
-% for m = 1:num_iter_max
-%     C_1 = zeros(size(C));
-% 
-% % B_trans_B = (B_upd'*B_upd); % facilitates inner product computations
-%     err= horzcat(err,error_compute(corr,B,C,Y,W,lambda,lambda_1,lambda_2,lambda_3));
-%     fprintf('\n C update iteration %d || error: %f ',m,err(m));
-%     
-%     for i = 1:size(C_1,1)
-%         for j = 1:size(C_1,2)
-%         
-%             Corr_mat = reshape(corr(j,:,:),[size(corr,2),size(corr,3)]);
-%             C_1(i,j) = B_upd(:,i)'*Corr_mat*B_upd(:,i)+ 2*C(i,j)*((B_upd(:,i)'*B_upd(:,i))^2);
-%             for k = 1:size(C_1,1)
-%                 if(k~=i)
-%                     C_1(i,j) = C_1(i,j)+C(k,j)*((B_upd(:,k)'*B_upd(:,i))^2);
-%                 end
-%             end
-%         end
-%     end
-% 
-%     grad_C = C_1 + lambda*(W)*(C'*W-Y)' + 2*lambda_2*C;
-% 
-%     C_upd = C - lr2*grad_C;
-%     lr2 = lr2*0.5;
-%     fprintf('\n Rank before nn : %d',rank(C_upd));
-%     C_upd = max(C_upd,0);
-%     fprintf(' Rank after nn : %d',rank(C_upd));
-%     C= C_upd;
-%     plot(1:m,err,'g')
-%     drawnow;
-%     if (m>1) && (abs(err(m)-err(m-1))< 10e-01) && err(m)<= err(m-1)
-%         break;
-%     end
-%     
-% end
-
-
 
 %% W update
 % epsil = 10e-06;
