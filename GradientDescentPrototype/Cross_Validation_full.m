@@ -1,10 +1,10 @@
 clearvars 
 close all
 
-n =10;
+n =6;
 fold = 66;
 
-st = '/home/niharika-shimona/Documents/Projects/Autism_Network/Results/Sparse connectivity patterns/CV_Parallel/SRS_Aut_CV';
+st = '/home/niharika-shimona/Documents/Projects/Autism_Network/Results/Sparse connectivity patterns/CV_Parallel/ADOS_CV';
 % load(strcat(st,'/data_',num2str(fold),'.mat'))
 % fprintf(st)
 % fprintf('\n')
@@ -41,7 +41,7 @@ st = '/home/niharika-shimona/Documents/Projects/Autism_Network/Results/Sparse co
 clearvars -except str1 st fold;
 % load(str1)
 
-st_1 = strcat(st,'/workspace_10_net_66_rec');
+st_1 = strcat(st,'/workspace_6_net_66_rec');
 load(strcat(st_1,'.mat'))
 
 B_thresh = B_thresh_store;
@@ -55,11 +55,12 @@ Y_train = Y_train_store;
 
 clearvars -except fold W_gd corr_test corr_train B_gd C_gd Y_test Y_train B_thresh st_1
 lambda_2 = 1;
+lambda=1;
 
 for i = 1:size(B_thresh,2)
     
-    C_gd_test{i} = quad_estimate_C(B_gd{i},lambda_2,corr_test{i});
-    C_gd_train{i} = quad_estimate_C(B_gd{i},lambda_2,corr_train{i});
+    C_gd_test{i} = quad_estimate_C(B_gd{i},lambda_2,corr_test{i},W_gd{i},1);
+    C_gd_train{i} = quad_estimate_C(B_gd{i},lambda_2,corr_train{i},W_gd{i},1);
     Y_obt_test{i} = C_gd_test{i}'*W_gd{i};
     Y_obt_train{i} = C_gd{i}'*W_gd{i};
     Y_est_train{i} = C_gd_train{i}'*W_gd{i};
@@ -69,5 +70,5 @@ for i = 1:size(B_thresh,2)
     
 end
 
-str2  = strcat(st_1,'_test',num2str(fold),'.mat');
-save(str2)
+% str2  = strcat(st_1,'_test',num2str(fold),'.mat');
+% save(str2)

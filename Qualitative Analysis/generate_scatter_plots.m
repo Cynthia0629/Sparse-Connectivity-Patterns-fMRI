@@ -1,8 +1,8 @@
-strr = '/home/niharika-shimona/Documents/Projects/Autism_Network/Results/Sparse connectivity patterns/CV_Parallel/ADOS_CV/';
+strr = '/home/niharika-shimona/Documents/Projects/Autism_Network/Results/Sparse connectivity patterns/10 fold cross validation/ADOS_CV';
 
-for f = 10
+for f = 6:10
     clearvars -except f strr
-    load(strcat(strr,'/workspace_',num2str(f),'_net_66_rec_test66'))
+    load(strcat(strr,'/workspace_',num2str(f),'_net_10_test10'))
     Y_test_pred = [];
     Y_test_meas = [];
     Y_train_pred = [];

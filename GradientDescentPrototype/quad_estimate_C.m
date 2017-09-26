@@ -1,9 +1,9 @@
-function C_upd = quad_estimate_C(B_upd,lambda_2,corr)
+function C_upd = quad_estimate_C(B_upd,lambda_2,corr,W,lambda)
 
 C_upd = zeros(size(B_upd,2),size(corr,1));
 for m = 1:size(corr,1)
    
-    H = 2*((B_upd'*B_upd).^2 + lambda_2* eye(size(B_upd'*B_upd)));
+    H = 2*((B_upd'*B_upd).^2  +lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
     Corr_mat = reshape(corr(m,:,:),[size(corr,2),size(corr,3)]);
     M = -2*(B_upd'*Corr_mat*B_upd);
     f = diag(M) ;
