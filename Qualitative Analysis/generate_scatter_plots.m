@@ -1,8 +1,8 @@
-strr = '/home/niharika-shimona/Documents/Projects/Autism_Network/Results/Sparse connectivity patterns/10 fold cross validation/ADOS_CV';
+strrm = '/home/niharika-shimona/Documents/Projects/Autism_Network/Results/Sparse connectivity patterns/10_fold_CV_new/SRS_CA_CV/C0.01';
 
-for f = 6:10
-    clearvars -except f strr
-    load(strcat(strr,'/workspace_',num2str(f),'_net_10_test10'))
+for f = 10:11
+    clearvars -except f strrm
+    load(strcat(strrm,'/workspace_',num2str(f),'_net_10_fold_testC10'))
     Y_test_pred = [];
     Y_test_meas = [];
     Y_train_pred = [];
@@ -29,7 +29,7 @@ for f = 6:10
     xlabel('Measured')
     ylabel('Predicted')
 
-    str1 = strcat(strr,'/Plots/Predictive_performance_',num2str(f),'.jpg');
+    str1 = strcat(strrm,'/Plots/C_Predictive_performance_',num2str(f),'.jpg');
     saveas(figure1,str1)
     close all;
     
@@ -43,7 +43,7 @@ for f = 6:10
     xlabel('Measured')
     ylabel('Predicted')
     
-    str1 = strcat(strr,'/Plots/Predictive_performance_recovered_train_',num2str(f),'.jpg');
+    str1 = strcat(strrm,'/Plots/C_Predictive_performance_recovered_train_',num2str(f),'.jpg');
     saveas(figure2,str1)
     
 end
