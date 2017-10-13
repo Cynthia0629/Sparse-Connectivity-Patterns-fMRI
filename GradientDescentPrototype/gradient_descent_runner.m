@@ -17,7 +17,7 @@ xlabel('Number of iterations')
 ylabel('Value of obejctive function')
 
 for i = 1:num_iter
-    err= horzcat(err,error_compute(corr,B_old,B_hat_init,C_old,Y,W_old,lambda,lambda_1,lambda_2,lambda_3,lambda_4));
+    err= horzcat(err,error_compute(corr,B_old,B_hat_old,C_old,Y,W_old,lambda,lambda_1,lambda_2,lambda_3,lambda_4));
     fprintf(' At iteration %d || Error: %f \n',i,err(i))
     plot(1:i,err,'b');
     hold on;
