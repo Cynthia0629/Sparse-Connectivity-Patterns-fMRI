@@ -5,7 +5,7 @@ num_iter_max =100;
 %% B update
 fprintf('Optimise B')
 err =[];
-plot(0,0)
+% plot(0,0)
 
 for i = 1:num_iter_max
     
@@ -13,16 +13,16 @@ for i = 1:num_iter_max
     err= horzcat(err,error_compute(corr,B,B_hat,C,Y,W,lambda,lambda_1,lambda_2,lambda_3,lambda_4));
     fprintf('\n B update iteration %d || error: %f ',i,err(i));
     
-    plot(1:i,err,'r')
-    title('Algorithmic run')
-    xlabel('Iteration number')
-    ylabel('Objective value')
-    drawnow;
+%     plot(1:i,err,'r')
+%     title('Algorithmic run')
+%     xlabel('Iteration number')
+%     ylabel('Objective value')
+%     drawnow;
     for n = 1:size(corr,1)
         A_n = diag(C(:,n));
         Corr_mat = reshape(corr(n,:,:),[size(corr,2),size(corr,3)]);
-        B_hat_mat = reshape(B_hat(n,:,:),[size(corr,2),size(corr,3)]);
-        grad_B = grad_B - 4* (Corr_mat-B_hat_mat)*B*A_n + 4*B*A_n*(B'*B)*A_n;
+        %B_hat_mat = reshape(B_hat(n,:,:),[size(corr,2),size(corr,3)]);
+        grad_B = grad_B - 4* (Corr_mat-B_hat)*B*A_n + 4*B*A_n*(B'*B)*A_n;
     end
 
     grad_B = grad_B -lambda_4*4*B+lambda_4*4*(B*B')*B;
@@ -36,19 +36,27 @@ for i = 1:num_iter_max
     lr1 = lr1*0.1;
     
     if ((i>1) && (abs(err(i)-err(i-1))< 10e-06 || err(i-1)<= err(i)))      
+        B_upd = normc(B_upd);
         break;
     end
     if ((i>1)&&err(i)<= err(i-1))
+        B_upd = normc(B_upd);
         B = B_upd;
+        
     end
-    B_upd = normc(B_upd);
+   
 end
 
 
 %% B_hat update
 
-B_hat_upd = quad_estimate_B_hat(B_upd,C,corr);
-
+%B_hat_upd = quad_estimate_B_hat(B_upd,C,corr);
+B_hat_upd = zeros(size(corr,2),size(corr,3));
+for q = 1:size(corr,1)
+    B_hat_upd = B_hat_upd-B*diag(C(:,q))*B';
+end
+B_hat_upd = B_hat_upd./q ;
+B_hat_upd = B_hat_upd + reshape(mean(corr,1),[size(corr,2),size(corr,3)]);
 
 %% C update
 
@@ -58,8 +66,8 @@ for m = 1:n
    
     H = 2*((B_upd'*B_upd).^2 + lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
     Corr_mat = reshape(corr(m,:,:),[size(corr,2),size(corr,3)]);
-    B_hat_mat = reshape(B_hat(m,:,:),[size(corr,2),size(corr,3)]);
-    M = -2*(B_upd'*(Corr_mat-B_hat_mat)*B_upd);
+    %B_hat_mat = reshape(B_hat(m,:,:),[size(corr,2),size(corr,3)]);
+    M = -2*(B_upd'*(Corr_mat-B_hat_upd)*B_upd);
     f = diag(M) -2*lambda*Y(m)*W;
     A = -eye(size(C,1));
     b = zeros(size(C,1),1);

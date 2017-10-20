@@ -5,7 +5,7 @@ err = 0;
 
 for n = 1:size(corr,1)
 
-    X = reshape((corr(n,:,:)-B_hat(n,:,:)),[size(corr,2),size(corr,3)]) - B*diag(C(:,n))*B'; 
+    X = reshape((corr(n,:,:)),[size(corr,2),size(corr,3)]) -B_hat - B*diag(C(:,n))*B'; 
     err = err + norm(X,'fro').*2;
  
 end

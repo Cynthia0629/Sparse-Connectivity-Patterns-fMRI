@@ -10,7 +10,7 @@ B_hat = eye(size(corr,2));
 for i = 1:num_iter_max
     
     grad_B = zeros(size(B));
-    err= horzcat(err,error_compute(corr,B,C,C_hat,Y,W,lambda,lambda_1,lambda_2,lambda_3,lambda_4));
+    err= horzcat(err,error_compute_mod3(corr,B,C,C_hat,Y,W,lambda,lambda_1,lambda_2,lambda_3,lambda_4));
     fprintf('\n B update iteration %d || error: %f ',i,err(i));
     
 %     plot(1:i,err,'r')

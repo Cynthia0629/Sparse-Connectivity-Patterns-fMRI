@@ -1,7 +1,7 @@
 clearvars -except net
 close all
 
-load('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Real_Data_ADOS.mat')
+load('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Real_Data_ADOS_sub.mat')
 
 %% Initialising parameters
 
@@ -48,5 +48,5 @@ B_thresh = B_gd.*(B_gd<0.1*(min(min(B_gd)))) + B_gd.*(B_gd>0.1*(max(max(B_gd))))
 % title('Coefficients matrix')
 % 
 % plot_qual_res(B_gd,C_gd)
-str1 = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/ADOS_runs/workspace_qp_s_2_',num2str(net),'_net.mat');
+str1 = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/mod_3/ADOS_sub_runs/workspace_qp_s_2_',num2str(net),'_net.mat');
 save(str1)

@@ -23,9 +23,9 @@ for i = 1:num_iter
 %     hold on;
 %     drawnow;
     if (i<10)
-        [B,C,C_hat,W] = step_gradient(corr,B_old,C_old,C_hat_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lambda_4,0.0001); 
+        [B,C,C_hat,W] = step_gradient_mod3(corr,B_old,C_old,C_hat_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lambda_4,0.0001); 
     else 
-        [B,C,C_hat,W] = step_gradient(corr,B_old,C_old,C_hat_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lambda_4,lr1); 
+        [B,C,C_hat,W] = step_gradient_mod3(corr,B_old,C_old,C_hat_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lambda_4,lr1); 
     
     end
     B_old = B;
