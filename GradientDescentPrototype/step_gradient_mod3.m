@@ -49,7 +49,7 @@ end
 
 % quadratic prog solver: x = quadprog(H,f,A,b)
 C_upd = zeros(size(C));
-for m = 1:n
+for m = 1:size(corr,1)
    
     H = 2*((B_upd'*B_upd).^2 + lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
     Corr_mat = reshape(corr(m,:,:),[size(corr,2),size(corr,3)]);
@@ -64,7 +64,7 @@ end
 %% C_hat update
 
 C_hat_upd = zeros(size(C_hat));
-for m = 1:n
+for m = 1:size(corr,1)
    
     H = 2*B_hat;
     Corr_mat = reshape(corr(m,:,:),[size(corr,2),size(corr,3)]);

@@ -32,7 +32,8 @@ for i = 1:num_iter_max
     r = -1 + (2)*rand(size(signum_B));
     signum_B = signum_B + r.*k;
 
-    B_upd = B - lr1*(grad_B + lambda_1* signum_B);
+     B_upd = B - lr1*(grad_B + lambda_1* signum_B);
+%    B_upd = B - lr1*(grad_B + 2*lambda_1* B);
     lr1 = lr1*0.1;
     
     if ((i>1) && (abs(err(i)-err(i-1))< 10e-06 || err(i-1)<= err(i)))      
@@ -56,7 +57,7 @@ end
 
 % quadratic prog solver: x = quadprog(H,f,A,b)
 C_upd = zeros(size(C));
-for m = 1:n
+for m = 1:size(corr,1)
    
     H = 2*((B_upd'*B_upd).^2 + lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
     Corr_mat = reshape(corr(m,:,:),[size(corr,2),size(corr,3)]);
@@ -72,7 +73,7 @@ end
 
 %% W update
 % epsil = 10e-06;
-W_upd = pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y);
+W_upd = max(pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y),zeros(size(W)));
 
 
 end
