@@ -3,7 +3,7 @@ close all
 
 fold =10;
 % part =5; 
-st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/baseline/ADOS_GSR_CV';
+st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/baseline/ADOS_mean_CV';
 load(strcat(st,'/data_',num2str(fold),'.mat'))
 fprintf(st)
 fprintf('\n')
@@ -27,11 +27,11 @@ for i =1:size(Y_train,2)
     lambda_1 =2;
     lambda_2 =0.1;
     lambda_3 =0.1;
-    lambda_4 =0.0;
-    corr_GSR_train{i} = corr_train{i}- mean(corr_train{i},1);
+    lambda_4 =0;
+    %corr_GSR_train{i} = corr_train{i}- mean(corr_train{i},1);
     
     %[B_gd{i},B_hat_gd{i},C_gd{i},C_hat_gd{i},W_gd{i}] = gradient_descent_runner(corr_train{i},B_init,B_hat_init,C_init,C_hat_init,W_init,Y_train{i},lambda,lambda_1,lambda_2,lambda_3,lambda_4,lr1);
-    [B_gd{i},C_gd{i},W_gd{i}] = gradient_descent_runner_old(corr_GSR_train{i},B_init,C_init,W_init,Y_train{i},lambda,lambda_1,lambda_2,lambda_3,lambda_4,lr1);
+    [B_gd{i},C_gd{i},W_gd{i}] = gradient_descent_runner_old(corr_train{i},B_init,C_init,W_init,Y_train{i},lambda,lambda_1,lambda_2,lambda_3,lambda_4,lr1);
     
     B_thresh{i} = B_gd{i}.*(B_gd{i}<0.1*(min(min(B_gd{i})))) + B_gd{i}.*(B_gd{i}>0.1*(max(max(B_gd{i}))));
     
@@ -39,7 +39,7 @@ for i =1:size(Y_train,2)
     %str2 = strcat(str1,num2str(part),'.mat');
     
 
-    str1 = strcat(st,'/workspace_non_neg_2_',num2str(net),'_net_',num2str(fold),'_fold');
+    str1 = strcat(st,'/workspace_wo_orth_',num2str(net),'_net_',num2str(fold),'_fold_',num2str(lambda_2),'_regC_');
     str2 = strcat(str1,'.mat');
     save(str2)
 end

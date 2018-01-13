@@ -92,7 +92,7 @@ C_hat_upd = zeros(size(C_hat));
 % end
 %% W update
 % epsil = 10e-06;
-W_upd = max(pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y),zeros(size(W)));
-
+%W_upd = max(pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y),zeros(size(W)));
+W_upd = pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y);
 
 end

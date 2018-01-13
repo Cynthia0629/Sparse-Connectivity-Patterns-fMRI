@@ -2,7 +2,7 @@
 %% Parameters 
  
  P = 116;
- N = 130 ;
+ N = 66 ;
  K = 4;
  p = 10;
  net_ind_1 = randperm(P) ;
@@ -17,8 +17,8 @@
  sigma_corr =0.8*ones(P,P);
  sigma_y = ones(N,1);
  
- sigma_B = 0.2* ones(P,K);
- mu_B = zeros(P,K);
+%  sigma_B = 0.2* ones(P,K);
+%  mu_B = zeros(P,K);
  
  %% Initialisations
  
@@ -28,18 +28,19 @@ C = abs(normrnd(mu_C,sigma_C));
 % C = rand(K,N);
 Y = normrnd(C'*W,sigma_y);
  
-B = normrnd(mu_B,sigma_B);
+%B = normrnd(mu_B,sigma_B);
  
-for k = 1:K
-     
-     nz_ind = net_ind(:,k);
-     b_k = zeros(P,1);
-     b_k(nz_ind,:) = 1;
-     b_k(net_ind_1(end-p*4+1:end),:) = 1;
-     B(:,k) = B(:,k).*b_k;
-     
-end
- 
+% for k = 1:K
+%      
+%      nz_ind = net_ind(:,k);
+%      b_k = zeros(P,1);
+%      b_k(nz_ind,:) = 1;
+%      b_k(net_ind_1(end-p*4+1:end),:) = 1;
+%      B(:,k) = B(:,k).*b_k;
+%      
+% end
+%  
+B = laprnd(P,K,0,0.2);
 corr = zeros(N,P,P);
  
 for n = 1:N

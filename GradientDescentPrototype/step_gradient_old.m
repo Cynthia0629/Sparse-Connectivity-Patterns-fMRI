@@ -47,12 +47,6 @@ for i = 1:num_iter_max
     
 end
 
-
-%% B_hat update
-
-%B_hat_upd = quad_estimate_B_hat(B_upd,C,corr);
-
-
 %% C update
 
 % quadratic prog solver: x = quadprog(H,f,A,b)
@@ -73,7 +67,7 @@ end
 
 %% W update
 % epsil = 10e-06;
-W_upd = max(pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y),zeros(size(W)));
-
+%W_upd = max(pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y),zeros(size(W)));
+W_upd = pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y);
 
 end
