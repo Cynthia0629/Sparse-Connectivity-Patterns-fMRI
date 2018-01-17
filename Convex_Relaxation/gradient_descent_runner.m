@@ -22,16 +22,20 @@ thresh = 10e-06;
         
         err_out= horzcat(err_out,error_compute(corr,B_old,C_old,Y,W_old,D_old,lamb_old,lambda,lambda_1,lambda_2,lambda_3));
         fprintf(' At iteration %d || Error: %f \n',i,err_out(i))
-        plot(1:i,err_out,'b');
+        plot(1:i,err_out,'r');
         hold on;
         drawnow;
         
-        [B,C,D,W] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3); 
-    
+        if (i<20)
+           [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
+        else
+           [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
+        end
         B_old = B;
         C_old = C;
         D_old =D;
         W_old =W;
+        lamb_old =lamb;
     
         if (i>1 && abs(err_out(i)-err_out(i-1)) < thresh)
            break;

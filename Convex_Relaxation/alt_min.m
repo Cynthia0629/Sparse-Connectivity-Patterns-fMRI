@@ -1,19 +1,21 @@
-function [B_upd,C_upd,D_upd,W_upd,lamb_upd] = alt_min(corr,B,C,W,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3)
+function [B_upd,C_upd,D_upd,W_upd,lamb_upd] = alt_min(corr,B,C,W,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1)
 %%Given the current values of the iterates, performs a single step of
 %%gradient descent using alternating minimisation
-num_iter_max =1000;
+num_iter_max =100;
 
 
 %% B update
 fprintf('Optimise B \n')
 
-t = 1/lambda_1;
+t = lambda_1;
 
 err_inner = [];
 for iter = 1:num_iter_max
+  
   DG = zeros(size(B));
+  
   for j = 1:size(corr,1)
-    
+      
       Corr_j = reshape(corr(j,:,:),[size(corr,2),size(corr,3)]);
       D_k = reshape(D(j,:,:),[size(D,2),size(D,3)]);
       lamb_j =reshape(lamb(j,:,:),[size(lamb,2),size(lamb,3)]);
@@ -21,11 +23,15 @@ for iter = 1:num_iter_max
       DG = DG -2*Corr_j*D_k +2*B*(D_k'*D_k) -D_k*diag(C(:,j)) +B*diag(C(:,j))*diag(C(:,j))- lamb_j*diag(C(:,j));
   end
   
-  X_mat = B - t*DG;
-  G_mat = (1/t)*(B-wthresh(X_mat,'s',t));
-  B = B - t*0.001*G_mat;
+  if(iter ==1)
+      DG_init = DG;
+  end
+      
+   X_mat = B - t*DG;
+%   G_mat = (1/t)*(B-wthresh(X_mat,'s',t));
+  B = sign(X_mat).*(abs(X_mat)-t);
   %B = normc(B);
-  if (norm(DG,2)< 10e-06)
+  if (norm(DG,2)/norm(DG_init,2)< 10e-04)
       break;
   end
   
@@ -50,8 +56,8 @@ for m = 1:size(corr,1)
     D_m = reshape(D(m,:,:),[size(D,2),size(D,3)]);
     lamb_m =reshape(lamb(m,:,:),[size(lamb,2),size(lamb,3)]);
     
-    L1 = 2*D_m'*diag(C(:,m));
-    L2 = 2*lamb_m'*B_upd;
+    L1 = 2*D_m'*B_upd;
+    L2 = lamb_m'*B_upd;
     
     f = -diag(L1) - diag(L2) -2*lambda*Y(m)*W;
     
@@ -62,13 +68,15 @@ for m = 1:size(corr,1)
     C_upd(:,m) = c_m;
 end
 
+fprintf(' Step C || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 %% W update
 % epsil = 10e-06;
 fprintf('Optimise W \n')
 W_upd = pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y);
+fprintf(' Step W || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
 %% Dn's and lambda matrix update
-
+fprintf('Optimise D \n')
 D_upd = zeros(size(D));
 lamb_upd = zeros(size(lamb));
 for k= 1:size(lamb,1)
@@ -78,10 +86,14 @@ for k= 1:size(lamb,1)
      
      for c=1:num_iter_max
                
-        D_k = (diag(C_upd(:,k))*B_upd'+ 2*Corr_k*B_upd - lamb_k)*pinv(eye(size(B_upd'*B_upd)+B_upd'*B_upd));
-        lamb_k = lamb_k + lr1*(D_k - B*diag(C(k,:)));
+        D_k = (B_upd*diag(C_upd(:,k))+ 2*Corr_k*B_upd - lamb_k)*pinv(eye(size(B_upd'*B_upd))+2*(B_upd'*B_upd));
+        lamb_k = lamb_k + lr1*(D_k - B_upd*diag(C_upd(:,k)));
         
-        if (norm(D_k - B*diag(C(k,:)))<10e-06)
+        if (c ==1)
+            grad_norm_init = norm(D_k - B_upd*diag(C_upd(:,k)),2);
+        end
+        
+        if (norm(D_k - B_upd*diag(C_upd(:,k)),2)/grad_norm_init<10e-06)
            break;
         end
         
@@ -90,6 +102,7 @@ for k= 1:size(lamb,1)
      lamb_upd(k,:,:)= lamb_k;
      D_upd(k,:,:) =D_k;
 end
+fprintf(' Step D || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
        
 end
      
