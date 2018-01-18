@@ -4,7 +4,7 @@
  P = 116;
  N = 66 ;
  K = 4;
- p = 10;
+ p = 5;
  net_ind_1 = randperm(P) ;
  net_ind = reshape(net_ind_1(1:end-p*4),[(P-p*4)/K,K]);
 

@@ -7,7 +7,7 @@ num_iter_max =100;
 %% B update
 fprintf('Optimise B \n')
 
-t = lambda_1;
+t =0.001;
 
 err_inner = [];
 for iter = 1:num_iter_max
@@ -27,19 +27,24 @@ for iter = 1:num_iter_max
       DG_init = DG;
   end
       
-   X_mat = B - t*DG;
+   X_mat = B - t*DG/lambda_1;
 %   G_mat = (1/t)*(B-wthresh(X_mat,'s',t));
-  B = sign(X_mat).*(abs(X_mat)-t);
+  B = sign(X_mat).*(max(abs(X_mat)-t,0));
   %B = normc(B);
-  if (norm(DG,2)/norm(DG_init,2)< 10e-04)
-      break;
-  end
+%   if (iter >1)
+%       t=t*1.01;
+%   end
   
   err_inner= horzcat(err_inner,error_compute(corr,B,C,Y,W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
-  fprintf(' At B iteration %d || Error: %f \n',iter,err_inner(iter))
+  fprintf(' At B iteration %d || Error: %f \n',iter,err_inner(iter))   
   plot(1:iter,err_inner,'b');
   hold on;
   drawnow;
+  
+  if ((iter>2)&&(norm(DG,2)/norm(DG_init,2)< 10e-06))
+      break;
+  end
+  
 end 
 
 B_upd = B;
@@ -101,6 +106,7 @@ for k= 1:size(lamb,1)
      
      lamb_upd(k,:,:)= lamb_k;
      D_upd(k,:,:) =D_k;
+     lr1=lr1*0.5;
 end
 fprintf(' Step D || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
        

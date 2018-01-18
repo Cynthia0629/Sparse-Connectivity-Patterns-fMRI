@@ -2,13 +2,13 @@ function [B,C,W,D,lamb] = gradient_descent_runner(corr,B_init,C_init,W_init,D_in
 %%runs gradient descent using alternating minimisation
 
 %Initilise
-num_iter =1000;
+num_iter =200;
 B_old = B_init;
 C_old = C_init;
 D_old = D_init;
 W_old = W_init;
 lamb_old =lamb_init;
-thresh = 10e-06;
+thresh = 10e-04;
 
 
     %Iterate
@@ -26,10 +26,11 @@ thresh = 10e-06;
         hold on;
         drawnow;
         
-        if (i<20)
+        if (i<25)
            [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
         else
-           [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
+            %lambda_1 = lambda_1*1.05;
+           [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1*0.1); 
         end
         B_old = B;
         C_old = C;
@@ -37,7 +38,7 @@ thresh = 10e-06;
         W_old =W;
         lamb_old =lamb;
     
-        if (i>1 && abs(err_out(i)-err_out(i-1)) < thresh)
+        if (i>1 && abs((err_out(i)-err_out(i-1))) < thresh)
            break;
         end
     
