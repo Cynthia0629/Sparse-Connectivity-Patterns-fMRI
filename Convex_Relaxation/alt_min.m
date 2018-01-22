@@ -47,7 +47,7 @@ for iter = 1:num_iter_max
   
 end 
 
-B_upd = B;
+B_upd = normc(B);
 %% C update
 
 fprintf('Optimise C \n')
