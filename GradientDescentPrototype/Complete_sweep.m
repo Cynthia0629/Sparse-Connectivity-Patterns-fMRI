@@ -1,6 +1,8 @@
 
-addpath(genpath('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI'));
+addpath(genpath('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/GradientDescentPrototype/'));
 
-for net=6:21
-   Compute_test
+net =8;
+
+for net =8
+   Cross_Validation_full
 end

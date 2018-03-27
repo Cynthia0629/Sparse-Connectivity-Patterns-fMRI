@@ -7,7 +7,7 @@ num_iter_max =100;
 %% B update
 fprintf('Optimise B \n')
 
-t =0.0005;
+t =0.001;
 
 err_inner = [];
 for iter = 1:num_iter_max
@@ -47,7 +47,10 @@ for iter = 1:num_iter_max
   
 end 
 
-B_upd = normc(B);
+B_upd = B;
+
+fprintf(' At final B iteration || Error: %f \n',error_compute(corr,B_upd,C,Y,W,D,lamb,lambda,lambda_1,lambda_2,lambda_3))   
+
 %% B_avg update
 fprintf('Optimise B_avg \n')
 
@@ -72,15 +75,15 @@ fprintf('Optimise C \n')
 C_upd = zeros(size(C));
 for m = 1:size(corr,1)
    
-    H = 2*(diag(diag(B_upd'*B_upd))+ lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
+    H = diag(diag(B_upd'*B_upd)) + 2*(lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
     
     D_m = reshape(D(m,:,:),[size(D,2),size(D,3)]);
     lamb_m =reshape(lamb(m,:,:),[size(lamb,2),size(lamb,3)]);
     
-    L1 = 2*D_m'*B_upd;
+    L1 = D_m'*B_upd;
     L2 = lamb_m'*B_upd;
     
-    f = -diag(L1) - diag(L2) -2*lambda*Y(m)*W;
+    f = -diag(L1)-diag(L2)-2*lambda*Y(m)*W;
     
     A = -eye(size(C,1));
     b = zeros(size(C,1),1);
@@ -93,7 +96,7 @@ fprintf(' Step C || Error: %f \n',error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y
 %% W update
 % epsil = 10e-06;
 fprintf('Optimise W \n')
-W_upd = pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y);
+W_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*Y);
 fprintf(' Step W || Error: %f \n',error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y,W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
 %% Dn's and lambda matrix update
@@ -108,7 +111,7 @@ for k= 1:size(lamb,1)
      for c=1:num_iter_max
                
         D_k = (B_upd*diag(C_upd(:,k))+ 2*(Corr_k-B_avg_upd)*B_upd - lamb_k)*pinv(eye(size(B_upd'*B_upd))+2*(B_upd'*B_upd));
-        lamb_k = lamb_k + lr1*(D_k - B_upd*diag(C_upd(:,k)));
+        lamb_k = lamb_k + (0.5^(c-1))*lr1*(D_k - B_upd*diag(C_upd(:,k)));
         
         if (c ==1)
             grad_norm_init = norm(D_k - B_upd*diag(C_upd(:,k)),2);
@@ -117,12 +120,12 @@ for k= 1:size(lamb,1)
         if (norm(D_k - B_upd*diag(C_upd(:,k)),2)/grad_norm_init<10e-06)
            break;
         end
+        %lr1=lr1*0.5;
         
      end
      
      lamb_upd(k,:,:)= lamb_k;
      D_upd(k,:,:) =D_k;
-     lr1=lr1*0.5;
 end
 fprintf(' Step D || Error: %f \n',error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y,W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
        

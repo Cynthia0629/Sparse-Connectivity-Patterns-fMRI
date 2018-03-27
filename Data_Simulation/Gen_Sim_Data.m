@@ -1,21 +1,21 @@
- clear all
+ clearvars -except params set
 %% Parameters 
  
  P = 116;
  N = 66 ;
  K = 4;
- p = 5;
+ p = params.nnz;
  net_ind_1 = randperm(P) ;
  net_ind = reshape(net_ind_1(1:end-p*4),[(P-p*4)/K,K]);
 
  sigma_w = 0.5*ones(K,1);
  mu_w = zeros(K,1);
  
- sigma_C = 4*ones(K,N);
+ sigma_C = 2*ones(K,N);
  mu_C = zeros(K,N);
  
- sigma_corr =0.8*ones(P,P);
- sigma_y = ones(N,1);
+ sigma_corr =params.sig_corr*ones(P,P);
+ sigma_y = params.sig_y * ones(N,1);
  
  sigma_B = 0.2* ones(P,K);
  mu_B = zeros(P,K);
@@ -44,10 +44,10 @@ end
 corr = zeros(N,P,P);
  
 for n = 1:N
-    B*diag(C(:,n))*B'
+%   B*diag(C(:,n))*B'
     corr(n,:,:) = normrnd(B*diag(C(:,n))*B',sigma_corr);
     Corr_mat = reshape(corr(n,:,:),[size(corr,2),size(corr,3)]);
     corr(n,:,:) = (Corr_mat+ Corr_mat')/2;
 end
  
-save('Simulated_Data.mat','B','C','Y','W','corr')
+save(strcat('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/Simulated_Data/Simulated_Data',str(set),'.mat'),'B','C','Y','W','corr','params')

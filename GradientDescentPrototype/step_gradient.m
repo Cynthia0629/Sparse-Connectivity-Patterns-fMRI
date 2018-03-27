@@ -26,6 +26,7 @@ for i = 1:num_iter_max
     end
 
     grad_B = grad_B -lambda_4*4*B+lambda_4*4*(B*B')*B;
+
     
     signum_B = sign(B);
     k = (signum_B==0);
@@ -33,18 +34,20 @@ for i = 1:num_iter_max
     signum_B = signum_B + r.*k;
 
     B_upd = B - lr1*(grad_B + lambda_1* signum_B);
+
+    if  (i==1)
+       grad_B_init = grad_B;         
+    end
     %B_upd = B - lr1*(grad_B + 2*lambda_1* B);
     lr1 = lr1*0.1;
     
-    if ((i>1) && (abs(err(i)-err(i-1))< 10e-06 || err(i-1)<= err(i)))      
+    if ((i>1) && ((abs(norm(grad_B+lambda_1* signum_B,2)/norm(grad_B_init)) < 10e-04) || err(i-1)<= err(i)))      
         B_upd = normc(B_upd);
         break;
     end
-    if ((i>1)&&err(i)<= err(i-1))
-        B_upd = normc(B_upd);
-        B = B_upd;
-        
-    end
+    
+    B_upd = normc(B_upd);
+    B = B_upd;        
    
 end
 
@@ -93,6 +96,6 @@ C_hat_upd = zeros(size(C_hat));
 %% W update
 % epsil = 10e-06;
 %W_upd = max(pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y),zeros(size(W)));
-W_upd = pinv(C_upd*C_upd'+ 2*lambda_3*eye(size(C*C')))*(C_upd*Y);
+W_upd = pinv(C_upd*C_upd'+ (lambda_3/lambda)*eye(size(C*C')))*(C_upd*Y);
 
 end

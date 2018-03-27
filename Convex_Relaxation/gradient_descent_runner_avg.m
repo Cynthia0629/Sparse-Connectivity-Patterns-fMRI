@@ -31,7 +31,7 @@ thresh = 10e-04;
            [B,B_avg,C,D,W,lamb] = alt_min_avg(corr,B_old,B_avg_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
         else
             %lambda_1 = lambda_1*1.05;
-           [B,B_avg,C,D,W,lamb] = alt_min_avg(corr,B_old,B_avg_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1*0.1); 
+           [B,B_avg,C,D,W,lamb] = alt_min_avg(corr,B_old,B_avg_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
         end
         B_old = B;
         B_avg_old =B_avg;

@@ -1,10 +1,10 @@
 %% Testing
 fold =10;
-st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/baseline/ADOS_median_CV';
+st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Intersession_Experiments/Convergence_Criteria/SRS_Aut_CV';
 
 load(strcat(st,'/data_',num2str(fold),'.mat'))
 
-str1 = strcat(st,'/workspace_wo_orth_',num2str(net),'_net_',num2str(fold),'_fold_0.1_regC_');
+str1 = strcat(st,'/workspace_wo_orth_',num2str(net),'_net_',num2str(fold),'_fold_0.003_regC_');
 fin =str1;
 load(strcat(str1,'.mat'))
 

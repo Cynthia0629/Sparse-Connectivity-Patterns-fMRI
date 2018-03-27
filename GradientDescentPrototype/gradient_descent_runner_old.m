@@ -7,7 +7,7 @@ B_old = B_init;
 C_old = C_init;
 %B_hat_old=B_hat_init;
 W_old = W_init;
-thresh = 10e-06;
+thresh = 10e-04;
 
 %Iterate
 err =[];

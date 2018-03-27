@@ -7,7 +7,7 @@ num_iter_max =100;
 %% B update
 fprintf('Optimise B \n')
 
-t =0.0005;
+t =0.001;
 
 err_inner = [];
 for iter = 1:num_iter_max
@@ -41,7 +41,7 @@ for iter = 1:num_iter_max
 %   hold on;
 %   drawnow;
 %   
-  if ((iter>2)&&((max(0,norm(DG,2)/norm(DG_init,2))< 10e-06)||(err_inner(iter)>err_inner(iter-1))))
+  if ((iter>2)&&((max(0,norm(DG,2)/norm(DG_init,2))< 10e-06)||(err_inner(iter)>err_inner(iter-2))))
       break;
   end
   
