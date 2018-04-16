@@ -33,5 +33,5 @@ for i  = 1:fold
     
 end
 
-str1  = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/SRS_tot_data_',num2str(fold),'.mat');
+str1  = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/data_',num2str(fold),'.mat');
 save(str1)

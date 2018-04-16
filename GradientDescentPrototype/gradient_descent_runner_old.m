@@ -2,7 +2,7 @@ function [B,C,W] = gradient_descent_runner_old(corr,B_init,C_init,W_init,Y,lambd
 %%runs gradient descent using alternating minimisation
 
 %Initilise
-num_iter =1000;
+num_iter =750;
 B_old = B_init;
 C_old = C_init;
 %B_hat_old=B_hat_init;

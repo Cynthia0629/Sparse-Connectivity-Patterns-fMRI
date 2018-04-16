@@ -3,6 +3,9 @@ addpath(genpath('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/GradientDe
 
 net =8;
 
-for net =8
-   Cross_Validation_full
+for lambda_1 =[5]
+    
+%      lambda_1= 0.9+(lam-2)*0.1;
+%    lambda_3 =0.1^(lam-2)
+   Cross_Validation_full_1
 end

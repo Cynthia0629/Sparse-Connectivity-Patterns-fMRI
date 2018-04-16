@@ -5,9 +5,10 @@ num_iter_max =100;
 
 
 %% B update
+
 fprintf('Optimise B \n')
 
-t =0.001;
+t =0.0001;
 
 err_inner = [];
 for iter = 1:num_iter_max

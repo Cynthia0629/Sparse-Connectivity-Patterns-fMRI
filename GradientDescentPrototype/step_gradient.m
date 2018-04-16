@@ -41,8 +41,11 @@ for i = 1:num_iter_max
     %B_upd = B - lr1*(grad_B + 2*lambda_1* B);
     lr1 = lr1*0.1;
     
-    if ((i>1) && ((abs(norm(grad_B+lambda_1* signum_B,2)/norm(grad_B_init)) < 10e-04) || err(i-1)<= err(i)))      
+    if ((i>1) && ((abs(norm(grad_B+lambda_1* signum_B,2)/norm(grad_B_init)) < 10e-04)))      
         B_upd = normc(B_upd);
+        break;
+    elseif((i>1) && err(i-1)<= err(i))
+        B_upd = normc(B);
         break;
     end
     

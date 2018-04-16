@@ -8,7 +8,7 @@ C_old = C_init;
 C_hat_old = C_hat_init;
 B_hat_old=B_hat_init;
 W_old = W_init;
-thresh = 10e-06;
+thresh = 10e-04;
 
 %Iterate
 err =[];
@@ -23,7 +23,7 @@ for i = 1:num_iter
 %     plot(1:i,err,'b');
 %     hold on;
 %     drawnow;
-    if (i<10)
+    if (i<20)
         [B,B_hat,C,C_hat,W] = step_gradient(corr,B_old,B_hat_old,C_old,C_hat_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lambda_4,0.0001); 
     else 
         [B,B_hat,C,C_hat,W] = step_gradient(corr,B_old,B_hat_old,C_old,C_hat_old,W_old,Y,lambda,lambda_1,lambda_2,lambda_3,lambda_4,lr1); 
