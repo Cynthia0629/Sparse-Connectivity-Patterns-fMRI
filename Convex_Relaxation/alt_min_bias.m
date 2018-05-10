@@ -35,7 +35,7 @@ for iter = 1:num_iter_max
 %       t=t*1.01;
 %   end
   
-  err_inner= horzcat(err_inner,error_compute(corr,B,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+  err_inner= horzcat(err_inner,lambda_3*norm(b,2).^2+error_compute(corr,B,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
   fprintf(' At B iteration %d || Error: %f \n',iter,err_inner(iter))   
 %   plot(1:iter,err_inner,'b');
 %   hold on;
@@ -49,7 +49,7 @@ end
 B_upd = B;
 %B_upd = normc(B);
 
-fprintf(' At final B iteration || Error: %f \n',error_compute(corr,B_upd,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3))   
+fprintf(' At final B iteration || Error: %f \n',lambda_3*norm(b,2).^2+error_compute(corr,B_upd,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3))   
 %% C update
 
 fprintf('Optimise C \n')
@@ -75,17 +75,18 @@ for m = 1:size(corr,1)
     C_upd(:,m) = c_m;
 end
 
-fprintf(' Step C || Error: %f \n',error_compute(corr,B_upd,C_upd,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step C || Error: %f \n',lambda_3*norm(b,2).^2+error_compute(corr,B_upd,C_upd,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 %% W update
 % epsil = 10e-06;
 fprintf('Optimise W \n')
 W_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*(Y-b*ones(size(Y))));
-fprintf(' Step W || Error: %f \n',error_compute(corr,B_upd,C_upd,Y-b*ones(size(Y)),W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step W || Error: %f \n',lambda_3*norm(b,2).^2+error_compute(corr,B_upd,C_upd,Y-b*ones(size(Y)),W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
 %% b update
 
-b_upd= mean(Y-C_upd'*W_upd);
-fprintf(' Step b || Error: %f \n',error_compute(corr,B_upd,C_upd,Y-b_upd*ones(size(Y)),W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+%   b_upd= sum(Y-C_upd'*W_upd)/(numel(Y)+lambda_3/lambda);
+ b_upd = mean(Y-C_upd'*W_upd);
+fprintf(' Step b || Error: %f \n',lambda_3*norm(b_upd,2).^2+error_compute(corr,B_upd,C_upd,Y-b_upd*ones(size(Y)),W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
 %% Dn's and lambda matrix update
 fprintf('Optimise D \n')
@@ -116,7 +117,7 @@ for k= 1:size(lamb,1)
      D_upd(k,:,:) =D_k;
      
 end
-fprintf(' Step D || Error: %f \n',error_compute(corr,B_upd,C_upd,Y-b*ones(size(Y)),W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step D || Error: %f \n',lambda_3*norm(b_upd,2).^2+error_compute(corr,B_upd,C_upd,Y-b_upd*ones(size(Y)),W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
        
 end
      

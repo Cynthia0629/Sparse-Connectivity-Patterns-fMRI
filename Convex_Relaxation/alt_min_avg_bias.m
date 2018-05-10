@@ -1,4 +1,4 @@
-function [B_upd,B_avg_upd,C_upd,D_upd,W_upd,lamb_upd] = alt_min_avg(corr,B,B_avg,C,W,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1)
+function [B_upd,B_avg_upd,C_upd,D_upd,W_upd,b_upd,lamb_upd] = alt_min_avg_bias(corr,B,B_avg,C,W,b,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1)
 %%Given the current values of the iterates, performs a single step of
 %%gradient descent using alternating minimisation
 num_iter_max =100;
@@ -36,7 +36,7 @@ for iter = 1:num_iter_max
 %       t=t*1.01;
 %   end
   
-  err_inner= horzcat(err_inner,error_compute_avg(corr,B,B_avg,C,Y,W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+  err_inner= horzcat(err_inner,lambda_3*norm(b,2).^2+error_compute_avg(corr,B,B_avg,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
   fprintf(' At B iteration %d || Error: %f \n',iter,err_inner(iter))   
 %   plot(1:iter,err_inner,'b');
 %   hold on;
@@ -50,7 +50,7 @@ end
 
 B_upd = B;
 
-fprintf(' At final B iteration || Error: %f \n',error_compute_avg(corr,B_upd,B_avg,C,Y,W,D,lamb,lambda,lambda_1,lambda_2,lambda_3))   
+fprintf(' At final B iteration || Error: %f \n',lambda_3*norm(b,2).^2+error_compute_avg(corr,B_upd,B_avg,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3))   
 
 %% B_avg update
 fprintf('Optimise B_avg \n')
@@ -66,7 +66,7 @@ for l = 1:size(corr,1)
 end
 
 B_avg_upd = B_avg_upd/l ;
-fprintf(' Step B_avg || Error: %f \n',error_compute_avg(corr,B_upd,B_avg_upd,C,Y,W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step B_avg || Error: %f \n',lambda_3*norm(b,2).^2+error_compute_avg(corr,B_upd,B_avg_upd,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
 %% C update
 
@@ -84,22 +84,25 @@ for m = 1:size(corr,1)
     L1 = D_m'*B_upd;
     L2 = lamb_m'*B_upd;
     
-    f = -diag(L1)-diag(L2)-2*lambda*Y(m)*W;
+    f = -diag(L1)-diag(L2)-2*lambda*(Y(m)-b)*W;
     
-    A = -eye(size(C,1));
-    b = zeros(size(C,1),1);
+    A_qp = -eye(size(C,1));
+    b_qp = zeros(size(C,1),1);
     
-    c_m = quadprog(H,f,A,b);
+    c_m = quadprog(H,f,A_qp,b_qp);
     C_upd(:,m) = c_m;
 end
 
-fprintf(' Step C || Error: %f \n',error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y,W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step C || Error: %f \n',lambda_3*norm(b,2).^2+error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 %% W update
 % epsil = 10e-06;
 fprintf('Optimise W \n')
-W_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*Y);
-fprintf(' Step W || Error: %f \n',error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y,W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+W_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*(Y-b*ones(size(Y))));
+fprintf(' Step W || Error: %f \n',lambda_3*norm(b,2).^2+error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y-b*ones(size(Y)),W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
+%% b upd
+b_upd = sum(Y-C_upd'*W_upd)/(numel(Y)+lambda_3/lambda);
+% b_upd = mean(Y-C_upd'*W_upd);
 %% Dn's and lambda matrix update
 fprintf('Optimise D \n')
 D_upd = zeros(size(D));
@@ -128,7 +131,7 @@ for k= 1:size(lamb,1)
      lamb_upd(k,:,:)= lamb_k;
      D_upd(k,:,:) =D_k;
 end
-fprintf(' Step D || Error: %f \n',error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y,W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step D || Error: %f \n',lambda_3*norm(b_upd,2).^2+error_compute_avg(corr,B_upd,B_avg_upd,C_upd,Y-b_upd*ones(size(Y)),W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
        
 end
      

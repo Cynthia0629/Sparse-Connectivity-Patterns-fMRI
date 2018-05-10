@@ -1,6 +1,6 @@
 %% Testing
 fold =10;
-st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/SRS_Aut_CV/Bias/Sweep_reg_B';
+st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/SRS_Aut_res_CV/Scaled/Avg';
 
 % load(strcat(st,'/data_out_',num2str(fold),'.mat'))
 
@@ -12,13 +12,19 @@ str3  = strcat(fin,'_test',num2str(fold),'.mat');
 
 for i = 1:size(B_gd,2)
 
-    C_gd_test{i}= quad_estimate_C_old(B_gd{i},lambda_2,corr_test{i});
-    C_gd_train{i}= quad_estimate_C_old(B_gd{i},lambda_2,corr_train{i});
+    C_gd_test{i}= quad_estimate_C_avg(B_gd{i},lambda_2,corr_test{i},B_avg_gd{i});
+    C_gd_train{i}= quad_estimate_C_avg(B_gd{i},lambda_2,corr_train{i},B_avg_gd{i});
  
-     Y_obt_train{i} = (C_gd{i})'*W_gd{i}+b_gd{i};
-     Y_est_train{i} = (C_gd_train{i})'*W_gd{i}+b_gd{i};
-     Y_obt_test{i} = (C_gd_test{i})'*W_gd{i}+b_gd{i};
-    
+     Y_obt_train{i} = (C_gd{i})'*W_gd{i};
+     Y_est_train{i} = (C_gd_train{i})'*W_gd{i};
+     Y_obt_test{i} = (C_gd_test{i})'*W_gd{i};
+     
+%    offs =-20;
+     Y_obt_train{i} = (Y_obt_train{i}-offs)*(1/scale);
+     Y_train{i} = (Y_train{i}-offs)*(1/scale);
+     Y_est_train{i} = (Y_est_train{i} -offs)*(1/scale);
+     Y_obt_test{i} = (Y_obt_test{i} -offs)*(1/scale);
+     
     error_test(i) = sqrt(sum((Y_obt_test{i}(:)-Y_test{i}(:)).^2)/numel(Y_test{i}));
     error_train(i) = sqrt(sum((Y_obt_train{i}(:)-Y_train{i}(:)).^2)/numel(Y_train{i}));
     error_train_est(i) = sqrt(sum((Y_est_train{i}(:)-Y_train{i}(:)).^2)/numel(Y_train{i}));

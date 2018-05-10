@@ -48,6 +48,7 @@ thresh = 10e-04;
         C_old = C;
         D_old =D;
         W_old =W;
+        b_old =b;
         lamb_old =lamb;
     
         if (i>1 && (abs((err_out(i)-err_out(i-1))) < thresh || (err_out(i)>err_out(i-1))))
