@@ -1,6 +1,8 @@
 %% Testing
+
 fold =10;
-st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/SRS_Aut_res_CV/Scaled/Avg';
+
+st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/SRS_CA_CV/Avg';
 
 % load(strcat(st,'/data_out_',num2str(fold),'.mat'))
 
@@ -20,10 +22,10 @@ for i = 1:size(B_gd,2)
      Y_obt_test{i} = (C_gd_test{i})'*W_gd{i};
      
 %    offs =-20;
-     Y_obt_train{i} = (Y_obt_train{i}-offs)*(1/scale);
-     Y_train{i} = (Y_train{i}-offs)*(1/scale);
-     Y_est_train{i} = (Y_est_train{i} -offs)*(1/scale);
-     Y_obt_test{i} = (Y_obt_test{i} -offs)*(1/scale);
+     Y_obt_train{i} = (Y_obt_train{i})*(1/scale)-offs;
+     Y_train{i} = (Y_train{i})*(1/scale)-offs;
+     Y_est_train{i} = (Y_est_train{i})*(1/scale) -offs;
+     Y_obt_test{i} = (Y_obt_test{i})*(1/scale) -offs;
      
     error_test(i) = sqrt(sum((Y_obt_test{i}(:)-Y_test{i}(:)).^2)/numel(Y_test{i}));
     error_train(i) = sqrt(sum((Y_obt_train{i}(:)-Y_train{i}(:)).^2)/numel(Y_train{i}));
@@ -32,7 +34,8 @@ for i = 1:size(B_gd,2)
 end
 
 clear fin fni
-save(str3,'C_gd_train','C_gd_test','Y_est_train','Y_obt_test','error_test','error_train','error_train_est' ...
+filename = strcat(str3);
+save(filename,'C_gd_train','C_gd_test','Y_est_train','Y_obt_test','error_test','error_train','error_train_est' ...
 ,'B_gd','C_gd','Y_test','Y_train','W_gd')
 
 % save(str3,'C_gd_train','C_gd_test','Y_est_train','Y_obt_test','error_test','error_train','error_train_est' ...

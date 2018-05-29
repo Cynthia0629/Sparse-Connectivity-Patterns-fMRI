@@ -1,4 +1,4 @@
-function [B_upd,C_upd,D_upd,W_upd,b_upd,lamb_upd] = alt_min_bias(corr,B,C,W,b,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1)
+function [B_upd,C_upd,D_upd,W_ADOS_upd,W_SRS_upd,lamb_upd] = alt_min_multi(corr,B,C,W_ADOS,W_SRS,D,lamb,Y_ADOS,Y_SRS,lambda,lambda_1,lambda_2,lambda_3,lr1)
 %%Given the current values of the iterates, performs a single step of
 %%gradient descent using alternating minimisation
 num_iter_max =100;
@@ -35,7 +35,7 @@ for iter = 1:num_iter_max
 %       t=t*1.01;
 %   end
   
-  err_inner= horzcat(err_inner,lambda_3*norm(b,2).^2+error_compute(corr,B,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+  err_inner= horzcat(err_inner,error_compute_multi(corr,B,C,Y_ADOS,Y_SRS,W_ADOS,W_SRS,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
   fprintf(' At B iteration %d || Error: %f \n',iter,err_inner(iter))   
 %   plot(1:iter,err_inner,'b');
 %   hold on;
@@ -49,7 +49,7 @@ end
 B_upd = B;
 %B_upd = normc(B);
 
-fprintf(' At final B iteration || Error: %f \n',lambda_3*norm(b,2).^2+error_compute(corr,B_upd,C,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3))   
+fprintf(' At final B iteration || Error: %f \n',error_compute_multi(corr,B_upd,C,Y_ADOS,Y_SRS,W_ADOS,W_SRS,D,lamb,lambda,lambda_1,lambda_2,lambda_3))   
 %% C update
 
 fprintf('Optimise C \n')
@@ -58,7 +58,7 @@ fprintf('Optimise C \n')
 C_upd = zeros(size(C));
 for m = 1:size(corr,1)
    
-    H = diag(diag(B_upd'*B_upd)) + 2*(lambda*(W*W')+ 2*lambda_2* eye(size(B_upd'*B_upd)));
+    H = diag(diag(B_upd'*B_upd)) + 2*(lambda*(W_ADOS*W_ADOS'+W_SRS*W_SRS')+ 2*lambda_2* eye(size(B_upd'*B_upd)));
     
     D_m = reshape(D(m,:,:),[size(D,2),size(D,3)]);
     lamb_m =reshape(lamb(m,:,:),[size(lamb,2),size(lamb,3)]);
@@ -66,27 +66,24 @@ for m = 1:size(corr,1)
     L1 = D_m'*B_upd;
     L2 = lamb_m'*B_upd;
     
-    f = -diag(L1)-diag(L2)-2*lambda*(Y(m)-b)*W;
+    f = -diag(L1)-diag(L2)-2*lambda*(Y_ADOS(m)*W_ADOS + Y_SRS(m)*W_SRS);
     
-    A_q = -eye(size(C,1));
-    b_q = zeros(size(C,1),1);
+    A = -eye(size(C,1));
+    b = zeros(size(C,1),1);
     
-    c_m = quadprog(H,f,A_q,b_q);
+    c_m = quadprog(H,f,A,b);
     C_upd(:,m) = c_m;
 end
 
-fprintf(' Step C || Error: %f \n',lambda_3*norm(b,2).^2+error_compute(corr,B_upd,C_upd,Y-b*ones(size(Y)),W,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step C || Error: %f \n',error_compute_multi(corr,B_upd,C_upd,Y_ADOS,Y_SRS,W_ADOS,W_SRS,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 %% W update
 % epsil = 10e-06;
 fprintf('Optimise W \n')
-W_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*(Y-b*ones(size(Y))));
-fprintf(' Step W || Error: %f \n',lambda_3*norm(b,2).^2+error_compute(corr,B_upd,C_upd,Y-b*ones(size(Y)),W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
-%% b update
+W_ADOS_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*Y_ADOS);
+W_SRS_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*Y_SRS);
 
-%   b_upd= sum(Y-C_upd'*W_upd)/(numel(Y)+lambda_3/lambda);
- b_upd = mean(Y-C_upd'*W_upd);
-fprintf(' Step b || Error: %f \n',lambda_3*norm(b_upd,2).^2+error_compute(corr,B_upd,C_upd,Y-b_upd*ones(size(Y)),W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step W || Error: %f \n',error_compute_multi(corr,B_upd,C_upd,Y_ADOS,Y_SRS,W_ADOS_upd,W_SRS_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
 %% Dn's and lambda matrix update
 fprintf('Optimise D \n')
@@ -117,10 +114,6 @@ for k= 1:size(lamb,1)
      D_upd(k,:,:) =D_k;
      
 end
-fprintf(' Step D || Error: %f \n',lambda_3*norm(b_upd,2).^2+error_compute(corr,B_upd,C_upd,Y-b_upd*ones(size(Y)),W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
+fprintf(' Step D || Error: %f \n',error_compute_multi(corr,B_upd,C_upd,Y_ADOS,Y_SRS,W_ADOS_upd,W_SRS_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
        
 end
-     
-
-   
-    

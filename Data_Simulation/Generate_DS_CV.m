@@ -1,8 +1,8 @@
 clearvars 
 close all
 
-load('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/Real_Data_SRS_aut_out_sub.mat')
-fold = 58;
+load('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Schizophrenia/Real_Data_beta7_nc_sub.mat')
+fold = 10;
 
 %manually exclude outliers
 %A = (Y~=120&Y~=168&Y~=155&Y~=41&Y~=159&Y~=38&Y~=119&Y~=138&Y~=45);
@@ -12,13 +12,27 @@ corr_new = corr(:,:,:);
 indices = crossvalind('Kfold',Y_new,fold);
 
 for i = 1:fold
-%     test = (indices == i); train = ~test;
-    mask =  logical(zeros(fold,1));mask(i)=1;
-    Y_train{i} = Y_new(~mask);
-    Y_test{i} = Y_new(mask);
-    corr_train{i} = corr_new(~mask,:,:);
-    corr_test{i} = corr_new(mask,:,:);
+    test = (indices == i); train = ~test;
+%     mask =  logical(zeros(fold,1));mask(i)=1;
+    Y_train{i} = Y_new(train);
+    Y_test{i} = Y_new(test);
+    corr_train{i} = corr_new(train,:,:);
+    corr_test{i} = corr_new(test,:,:);
 end
 
-str1  = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/data_out_',num2str(fold),'.mat');
+
+load('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Schizophrenia/Real_Data_beta7_c_sub.mat')
+Y_new =Y;
+corr_new = corr(:,:,:);
+
+for i = 1:fold
+    test = (indices == i); train = ~test;
+%     mask =  logical(zeros(fold,1));mask(i)=1;
+    Y_train{i} = vertcat(Y_train{i},Y_new(train));
+    Y_test{i} = vertcat(Y_test{i},Y_new(test));
+    corr_train{i} = vertcat(corr_train{i},corr_new(train,:,:));
+    corr_test{i} = vertcat(corr_test{i},corr_new(test,:,:));
+end
+
+str1  = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/data_',num2str(fold),'.mat');
 save(str1)

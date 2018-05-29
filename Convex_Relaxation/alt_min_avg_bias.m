@@ -76,7 +76,7 @@ fprintf('Optimise C \n')
 C_upd = zeros(size(C));
 for m = 1:size(corr,1)
    
-    H = diag(diag(B_upd'*B_upd)) + 2*(lambda*(W*W')+ lambda_2* eye(size(B_upd'*B_upd)));
+    H = diag(diag(B_upd'*B_upd)) + 2*(lambda*(W*W')+ 2*lambda_2* eye(size(B_upd'*B_upd)));
     
     D_m = reshape(D(m,:,:),[size(D,2),size(D,3)]);
     lamb_m =reshape(lamb(m,:,:),[size(lamb,2),size(lamb,3)]);
