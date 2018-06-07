@@ -19,11 +19,11 @@ W_init =randn(net,1);
 
 lr1 = 0.001; 
 lambda = 1;
-lambda_1 =10;
+lambda_1 =20;
 lambda_2 =0.2;
 lambda_3 =1;
 
 
 [B_gd,C_gd,W_gd,D_gd,lamb_gd] = gradient_descent_runner(corr,B_init,C_init,W_init,D_init,Y,lamb_init,Q,lambda,lambda_1,lambda_2,lambda_3,lr1);
 
-save(strcat(my_path,'_set_',num2str(set),'_multimodal_','.mat'))
+save(strcat(my_path,'_out','.mat'))

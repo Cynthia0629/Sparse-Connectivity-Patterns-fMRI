@@ -7,7 +7,7 @@ num_iter_max =100;
 %% B update
 fprintf('Optimise B \n')
 
-t =0.0001;
+t =0.0005;
 
 err_inner = [];
 for iter = 1:num_iter_max
@@ -56,25 +56,7 @@ fprintf(' At final B iteration || Error: %f \n',error_compute(corr,B_upd,C,Y,W,D
 fprintf('Optimise C \n')
 
 % quadratic prog solver: x = quadprog(H,f,A,b)
-C_upd = zeros(size(C));
-for m = 1:size(corr,1)
-   
-    H = diag(diag(B_upd'*B_upd)) + 2*(lambda*(W*W')+ 2*lambda_2* eye(size(B_upd'*B_upd)));
-    
-    D_m = reshape(D(m,:,:),[size(D,2),size(D,3)]);
-    lamb_m =reshape(lamb(m,:,:),[size(lamb,2),size(lamb,3)]);
-    
-    L1 = D_m'*B_upd;
-    L2 = lamb_m'*B_upd;
-    
-    f = -diag(L1)-diag(L2)-2*lambda*Y(m)*W;
-    
-    A = -eye(size(C,1));
-    b = zeros(size(C,1),1);
-    
-    c_m = quadprog(H,f,A,b);
-    C_upd(:,m) = c_m;
-end
+C_upd = Quadratic_Updates(corr,B_upd,W,D,lamb,Y,lambda,lambda_2);
 
 fprintf(' Step C || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W,D,lamb,Q,lambda,lambda_1,lambda_2,lambda_3));
 %% W update
@@ -84,42 +66,12 @@ W_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*Y);
 fprintf(' Step W || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D,lamb,Q,lambda,lambda_1,lambda_2,lambda_3));
 
 %% Dn's and lambda matrix update
-fprintf('Optimise D \n')
+fprintf('Optimise D and lambda \n')
 D_upd = zeros(size(D));
 lamb_upd = zeros(size(lamb));
 
-for k= 1:size(lamb,1)
-        
-     Corr_k = reshape(corr(k,:,:),[size(corr,2),size(corr,3)]);
-     lamb_k =reshape(lamb(k,:,:),[size(lamb,2),size(lamb,3)]);
-     Q_k =reshape(Q(k,:,:),[size(Q,2),size(Q,3)]);
-     D_k_init = reshape(D(k,:,:),[size(D,2),size(D,3)]);
-   
-     
-     for c=1:num_iter_max
-               
-%         D_k = (B_upd*diag(C_upd(:,k))+ 2*Corr_k*B_upd - lamb_k)*pinv(eye(size(B_upd'*B_upd))+2*(B_upd'*B_upd));
-        grad_D_T1 = -2*(Q_k.*Corr_k)*B_upd - lamb_k + B_upd*diag(C_upd(:,k));
-        
-        D_k = grad_desc(grad_D_T1,B_upd,Q_k,0.001,D_k_init);
+[D_upd,lamb_upd] = Proximal_Updates(corr,lamb,Q,D,B_upd,C_upd,lr1);
 
-        lamb_k = lamb_k + (0.5^(c-1))*lr1*(D_k - B_upd*diag(C_upd(:,k)));
-        
-        if (c ==1)
-            grad_norm_init = norm(D_k - B_upd*diag(C_upd(:,k)),2);
-        end
-        
-        if (norm(D_k - B_upd*diag(C_upd(:,k)),2)/grad_norm_init<10e-06)
-           break;
-        end
-        %lr1=lr1*0.5;
-        
-     end
-     
-     lamb_upd(k,:,:)= lamb_k;
-     D_upd(k,:,:) =D_k;
-     
-end
 fprintf(' Step D || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D_upd,lamb_upd,Q,lambda,lambda_1,lambda_2,lambda_3));
        
 end

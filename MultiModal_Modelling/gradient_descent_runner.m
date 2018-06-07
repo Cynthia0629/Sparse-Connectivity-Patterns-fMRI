@@ -30,7 +30,11 @@ thresh = 10e-04;
            [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Q,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
         else
             %lambda_1 = lambda_1*1.05;
-           [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Q,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
+           lr2 = lr1*0.5;
+           if (i>20)
+            lr2 = lr1*0.25;
+           end
+           [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Q,Y,lambda,lambda_1,lambda_2,lambda_3,lr2); 
         end
         
         if(err_out(i)> 10e10)
@@ -50,7 +54,9 @@ thresh = 10e-04;
         lamb_old =lamb;
     
         if (i>1 && (abs((err_out(i)-err_out(i-1))) < thresh || (err_out(i)>err_out(i-1))))
-           
+           if(err_out(i)>err_out(i-1))
+               fprintf('\n Exiting due to increase in function value, at iter %d',i)
+           end
            break;
         end
     

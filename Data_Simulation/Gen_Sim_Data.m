@@ -4,7 +4,8 @@
  P = 116;
  N = 66;
  K = 4;
- p = 10;
+ p = 0;
+ perc =0.25;
  net_ind_1 = randperm(P) ;
  net_ind = reshape(net_ind_1(1:end-p*4),[(P-p*4)/K,K]);
 
@@ -20,7 +21,15 @@
  sigma_B = 0.2* ones(P,K);
  mu_B = zeros(P,K);
  
- Q = randi([0 1], N,P,P);
+Q = zeros(N,P,P);
+
+for i = 1:N
+    
+    A = rand(P);
+    SymA = (A+A')/2 ;
+    Q(i,:,:) = reshape(double(SymA>perc),[1,P,P]);
+    
+end
  %% Initialisations
  
 W = abs(normrnd(mu_w,sigma_w));
