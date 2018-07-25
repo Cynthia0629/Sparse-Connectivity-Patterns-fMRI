@@ -12,5 +12,5 @@
 
 curr_dir=$PWD
 #cd Convex_Relaxation/
-matlab -nojvm -nodisplay -nosplash -r "st=$st;l2=$l2*0.001;l1=$l1;l=$l;l3=$l3;net=$ne;offs_S=$offs;scale_S=$scale;run('/home-3/ndsouza4@jhu.edu/data/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/Complete_sweep_alg2.m');exit;"
+matlab -nojvm -nodisplay -nosplash -r "st=$st;l2=$l2*0.1;l1=$l1;l=$l;l3=$l3;net=$ne;offs=$offs;scale=$scale;run('/home-3/ndsouza4@jhu.edu/data/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/Complete_sweep_alg2.m');exit;"
 cd $curr_dir

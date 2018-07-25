@@ -5,7 +5,7 @@ max_iter=150;
 
 for i  = 1:max_iter
     
-    grad_iter = grad_D_T1 + 2*Q_k.*(D_k*B_upd')*B_upd +D_k;
+    grad_iter = grad_D_T1 + 2*(Q_k.*(Q_k.*(D_k*B_upd')))*B_upd +D_k;
      
     if (i==1)
         

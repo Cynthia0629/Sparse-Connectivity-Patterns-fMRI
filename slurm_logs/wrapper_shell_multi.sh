@@ -3,7 +3,7 @@
 #SBATCH
 #SBATCH --job-name=AutNet
 #SBATCH --time=0:01:00
-#SBATCH --partition=shared
+#SBATCH --partition=parallel
 #SBATCH --nodes=1
 # number of tasks per node
 #SBATCH --ntasks-per-node=1
@@ -17,21 +17,14 @@ module list
 
 # invokes the Batch Script with desired parameter settings in place
 
-
-for l2 in $(seq 1 0.2 2);
+for p in $(seq 80 10 80);
 do
-for en in $(seq 1 1 1);
-do
-
-	l1=40;
-	l=1;
-	l3=1;
-	ne=7;
-	offs=100;
-	scale=-1;
-        
-        st="'/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/Praxis_Aut/'";
-	export l1 l2 l3 l ne offs scale st
-	sbatch Batch_script_alg2.sh
+	for thresh in $(seq 0 2 4);
+	do
+        	l2=0.2;
+		l1=10;
+       		export thresh p l2 l1
+        	sbatch Batch_script_sim.sh
+	done
 done
-done 
+

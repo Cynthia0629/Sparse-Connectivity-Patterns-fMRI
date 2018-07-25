@@ -1,4 +1,4 @@
-function [D_upd,lamb_upd] = Proximal_Updates(corr,lamb,Q,D,B_upd,C_upd,lr)
+function [D_upd,lamb_upd] = Proximal_Updates_avg(corr,lamb,Q,D,B_upd,B_avg_upd,C_upd,lr)
 
 num_iter_max = 100;
 parfor k= 1:size(lamb,1)
@@ -12,7 +12,7 @@ parfor k= 1:size(lamb,1)
                
 %         D_k = (B_upd*diag(C_upd(:,k))+ 2*Corr_k*B_upd - lamb_k)*pinv(eye(size(B_upd'*B_upd))+2*(B_upd'*B_upd));
         
-        grad_D_T1 = -2*(Q_k.*Corr_k)*B_upd - lamb_k + B_upd*diag(C_upd(:,k));       
+        grad_D_T1 = -2*(Q_k.*(Corr_k-B_avg_upd))*B_upd - lamb_k + B_upd*diag(C_upd(:,k));       
         D_k = grad_desc(grad_D_T1,B_upd,Q_k,0.01,D_k_init);
 
         lamb_k = lamb_k + (0.5^(c-1))*lr*(D_k - B_upd*diag(C_upd(:,k)));
