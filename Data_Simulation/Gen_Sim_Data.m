@@ -2,10 +2,9 @@
 %% Parameters 
  
  P = 116;
- N = 66;
+ N = 58 ;
  K = 4;
- p = 0;
- perc =0.25;
+ p = 10;
  net_ind_1 = randperm(P) ;
  net_ind = reshape(net_ind_1(1:end-p*4),[(P-p*4)/K,K]);
 
@@ -21,15 +20,6 @@
  sigma_B = 0.2* ones(P,K);
  mu_B = zeros(P,K);
  
-Q = zeros(N,P,P);
-
-for i = 1:N
-    
-    A = rand(P);
-    SymA = (A+A')/2 ;
-    Q(i,:,:) = reshape(double(SymA>perc),[1,P,P]);
-    
-end
  %% Initialisations
  
 W = abs(normrnd(mu_w,sigma_w));
@@ -54,10 +44,9 @@ corr = zeros(N,P,P);
  
 for n = 1:N
     B*diag(C(:,n))*B'
-    Q_n = reshape(Q(n,:,:),[P,P]);
-    corr(n,:,:) = normrnd(Q_n.*(B*diag(C(:,n))*B'),sigma_corr);
+    corr(n,:,:) = normrnd(B*diag(C(:,n))*B',sigma_corr);
     Corr_mat = reshape(corr(n,:,:),[size(corr,2),size(corr,3)]);
     corr(n,:,:) = (Corr_mat+ Corr_mat')/2;
 end
  
-save('Simulated_Data_multimodal.mat','B','C','Y','W','corr','Q')
+save('Simulated_Data.mat','B','C','Y','W','corr')

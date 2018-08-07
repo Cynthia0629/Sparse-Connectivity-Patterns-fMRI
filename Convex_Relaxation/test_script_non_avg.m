@@ -22,10 +22,10 @@ for i = 1:size(B_gd,2)
      Y_obt_test{i} = (C_gd_test{i})'*W_gd{i};
      
 %    offs =-20;
-%      Y_obt_train{i} = (Y_obt_train{i})*(1/scale)-offs;
-%      Y_train{i} = (Y_train{i})*(1/scale)-offs;
-%      Y_est_train{i} = (Y_est_train{i})*(1/scale) -offs;
-%      Y_obt_test{i} = (Y_obt_test{i})*(1/scale) -offs;
+     Y_obt_train{i} = (Y_obt_train{i})*(1/scale)-offs;
+     Y_train{i} = (Y_train{i})*(1/scale)-offs;
+     Y_est_train{i} = (Y_est_train{i})*(1/scale) -offs;
+     Y_obt_test{i} = (Y_obt_test{i})*(1/scale) -offs;
      
     error_test(i) = sqrt(sum((Y_obt_test{i}(:)-Y_test{i}(:)).^2)/numel(Y_test{i}));
     error_train(i) = sqrt(sum((Y_obt_train{i}(:)-Y_train{i}(:)).^2)/numel(Y_train{i}));

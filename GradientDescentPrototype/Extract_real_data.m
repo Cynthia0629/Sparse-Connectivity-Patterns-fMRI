@@ -1,6 +1,6 @@
 clear all
 
-load('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/praxis_errors.mat')
+load('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Data_Simulation/praxis_errors_ADOS.mat')
 
 % x_aut = vertcat(x_aut,x_cont);
 N = size(x_aut,1);
@@ -16,8 +16,8 @@ for i = 1:N
         
         for k=j+1:116
             
-            corr(i,j,k) =x_cont(i,count);
-            corr(i,k,j) =x_cont(i,count);
+            corr(i,j,k) =x_aut(i,count);
+            corr(i,k,j) =x_aut(i,count);
             
             count = count+1;
             
@@ -30,6 +30,6 @@ for i = 1:N
 end
 
 
-Y = y_cont;
+% Y = y_cont;
 
-save('Real_Data_Praxis_Cont.mat','Y','corr')
+save('Real_Data_Praxis_ADOS.mat','y_ADOS','y_Praxis','corr')
