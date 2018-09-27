@@ -1,15 +1,20 @@
-clearvars 
-close all
-for  en = 2:10
+% clearvars 
+% close all
 
-    str = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Schizophrenia/Real_Data_beta7_c_eigsub_',num2str(en));
+for  en = 1
 
-    load(str)
+%     str = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Schizophrenia/Real_Data_beta7_c_eigsub_',num2str(en));
+
+%     load(str)
     fold = 10;
 
 %manually exclude outliers
 %A = (Y~=120&Y~=168&Y~=155&Y~=41&Y~=159&Y~=38&Y~=119&Y~=138&Y~=45);
+% praxis correct 
+%     Y_new =100-Y;
+    
     Y_new =Y;
+    
     corr_new = corr(:,:,:);
 
     indices = crossvalind('Kfold',Y_new,fold);
@@ -39,6 +44,6 @@ for  en = 2:10
 %     corr_test{i} = vertcat(corr_test{i},corr_new(test,:,:));
 % end
 
-     str1  = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Eig',num2str(en),'/data_',num2str(fold),'.mat');
+     str1  = strcat('/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/','data_out_',num2str(fold),'.mat');
      save(str1)
 end
