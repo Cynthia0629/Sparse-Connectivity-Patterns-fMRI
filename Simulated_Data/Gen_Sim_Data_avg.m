@@ -2,16 +2,14 @@
 %% Parameters 
  
  P = 116;
- N = 10 ;
+ N = 58 ;
  K = 4;
  p = params.nnz;
  net_ind_1 = randperm(P) ;
  net_ind = reshape(net_ind_1(1:end-p*4),[(P-p*4)/K,K]);
 
- 
- 
  sigma_C = 2*ones(K,N);
- mu_C = [zeros(K,N/2),1*ones(K,N/2)];
+ mu_C = [zeros(K,N/2),zeros(K,N/2)];
  
  sigma_corr =params.sig_corr*ones(P,P);
  sigma_y = ones(N,1);

@@ -2,7 +2,7 @@ set =1;
 
 for sig_y =0.05
     for sig_corr = 0.2
-        for nonz = 14
+        for nonz = 0
             
             params.sig_y =sig_y;
             params.sig_corr =sig_corr;

@@ -1,4 +1,4 @@
-function [B_upd,C_upd,D_upd,lamb_upd] = alt_min_NL(corr,B,C,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1)
+function [B_upd,C_upd,K_upd,D_upd,lamb_upd] = alt_min_NL(corr,B,C,K,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1)
 %%Given the current values of the iterates, performs a single step of
 %%gradient descent using alternating minimisation
 num_iter_max =100;
@@ -7,9 +7,11 @@ num_iter_max =100;
 %% B update
 fprintf('Optimise B \n')
 
-t =0.0001;
+t =0.0005;
 
 err_inner = [];
+
+ 
 for iter = 1:num_iter_max
   
   DG = zeros(size(B));
@@ -30,8 +32,8 @@ for iter = 1:num_iter_max
   X_mat = B - t*DG/lambda_1;
   B = sign(X_mat).*(max(abs(X_mat)-t,0));
 
-  
-  err_inner= horzcat(err_inner,error_compute_NL(corr,B,C,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
+ 
+  err_inner= horzcat(err_inner,error_compute_NL(corr,B,C,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
   fprintf(' At B iteration %d || Error: %f \n',iter,err_inner(iter))   
   plot(1:iter,err_inner,'b');
   hold on;
@@ -45,31 +47,37 @@ end
 B_upd = B;
 %B_upd = normc(B);
 
-fprintf(' At final B iteration || Error: %f \n',error_compute_NL(corr,B_upd,C,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1))   
-%% Compute Kernel
+fprintf(' At final B iteration || Error: %f \n',error_compute_NL(corr,B_upd,C,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1))   
 
-sigma =sqrt(1);
-K = compute_kernel(C,sigma);
-fprintf(' Rank of Kernel Matrix: %d \n', rank(K))
-alpha = pinv(K+(lambda_3/lambda)*eye(size(C,2)))*Y;
+
 
 %% C update
-
+sigma =sqrt(1);
 fprintf('Optimise C \n')
-
+% update coefficients
 % quadratic prog solver: x = quadprog(H,f,A,b)
-C_upd = Coefficient_Updates_NL(corr,B_upd,C,D,lamb,alpha,lambda,lambda_2,sigma);
 
-fprintf(' Step C || Error: %f \n',error_compute_NL(corr,B_upd,C_upd,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
+alpha = pinv(K+(lambda_3/lambda)*eye(size(C,2)))*Y;
+C_upd = Coefficient_Updates_NL(corr,B_upd,C,Y,D,lamb,alpha,lambda,lambda_2,sigma);
+
+
+fprintf(' Step C || Error: %f \n',error_compute_NL(corr,B_upd,C_upd,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
+
+%% Compute Kernel
+
+K_upd = compute_kernel(C,sigma);
+fprintf(' Rank of Kernel Matrix: %d \n', rank(K_upd))
+
+fprintf(' Step W || Error: %f \n',error_compute_NL(corr,B_upd,C,K_upd,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
 
 
 %% Dn's and lambda matrix update
 fprintf('Optimise D and lambda \n')
 
-
+%proximal variables update
 [D_upd,lamb_upd] = Proximal_Updates_NL(corr,lamb,B_upd,C_upd,lr1);
 
-fprintf(' Step D || Error: %f \n',error_compute_NL(corr,B_upd,C_upd,Y,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3,1));
+fprintf(' Step D || Error: %f \n',error_compute_NL(corr,B_upd,C_upd,K_upd,Y,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3,1));
        
 end
      
