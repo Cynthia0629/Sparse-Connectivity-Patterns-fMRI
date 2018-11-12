@@ -67,5 +67,5 @@ for n = 1:N
     
 end
  
-filename = strcat('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Simulated_Data/Simulated_Data_set_m_',num2str(set),'.mat');
+filename = strcat('/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Simulated_Data/Simulated_Data_set_polybias_',num2str(set),'.mat');
 save(filename,'B','B_avg','C','Y','W','corr','params')

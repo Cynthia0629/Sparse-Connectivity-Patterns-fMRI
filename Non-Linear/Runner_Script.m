@@ -1,20 +1,19 @@
-net = 4;seed=1;set=1;
+clearvars -except my_path net l l1 l2 l3 
+% my_path = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Non-Linear/Simulated_Data_NL/Simulated_Data_set_polybias_';
 
-my_path = '/home/niharika-shimona/Documents/Projects/Autism_Network/Sparse-Connectivity-Patterns-fMRI/Simulated_Data/Simulated_Data_set_m_';
-
-clearvars -except net set seed my_path
 close all;clc
 
-load(strcat(my_path,num2str(set),'.mat'))
+load(strcat(my_path,'.mat'))
+my_path 
 m= 116;
 
 n = size(corr,1);
-spa = nnz(B)/numel(B);
-params.spa =spa;
-rng(seed)
+% spa = nnz(B)/numel(B);
+% params.spa =spa;
+% rng(seed)
 
 % Initialisation
-B_init = sprandn(m,net,spa);
+B_init = sprandn(m,net,0.4);
 C_init =  2*abs(randn(net,size(Y,1)));
 sigma =sqrt(1);
 K_init = compute_kernel(C_init,sigma);
@@ -29,13 +28,14 @@ W_init =randn(net,1);
 
 %parameters
 lr1 = 0.001; 
-lambda = 1;
-lambda_1 =10;
-lambda_2 =0.1;
-lambda_3 =1;
+lambda = l;
+lambda_1 =l1;
+lambda_2 =l2;
+lambda_3 =l3;
 
 %calls alt. min. modules
 % [B_gd,B_avg_gd,C_gd,W_gd,D_gd,lamb_gd] = gradient_descent_runner_avg(corr,B_init,B_avg_init,C_init,W_init,D_init,Y,lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1);
-[B_gd,C_gd,K_gd,D_gd,lamb_gd] = gradient_descent_runner_NL(corr,B_init,C_init,K_init,D_init,Y,lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1);
+[B_gd,C_gd,K_gd,D_gd,lamb_gd] = gradient_descent_runner_NL(corr,B_init,C_init,K_init,D_init,Y,lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma);
 
-save(strcat(my_path,num2str(set),'_out_',num2str(seed),'.mat'))
+save(strcat(my_path,'_exppoly_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2), ...
+ '_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'.mat'))

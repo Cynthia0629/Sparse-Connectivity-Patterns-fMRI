@@ -2,7 +2,7 @@
 
 fold =10;
 
-st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/SRS_Aut_CV/Avg/';
+st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/SRS_Aut_CV/Paper_Journal/Avg';
 
 % load(strcat(st,'/data_out_',num2str(fold),'.mat'))
 

@@ -1,4 +1,4 @@
-function [B_upd,C_upd,K_upd,D_upd,lamb_upd] = alt_min_NL(corr,B,C,K,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1)
+function [B_upd,C_upd,K_upd,D_upd,lamb_upd] = alt_min_NL(corr,B,C,K,D,lamb,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma)
 %%Given the current values of the iterates, performs a single step of
 %%gradient descent using alternating minimisation
 num_iter_max =100;
@@ -7,7 +7,7 @@ num_iter_max =100;
 %% B update
 fprintf('Optimise B \n')
 
-t =0.0005;
+t =0.0001;
 
 err_inner = [];
 
@@ -35,9 +35,9 @@ for iter = 1:num_iter_max
  
   err_inner= horzcat(err_inner,error_compute_NL(corr,B,C,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
   fprintf(' At B iteration %d || Error: %f \n',iter,err_inner(iter))   
-  plot(1:iter,err_inner,'b');
-  hold on;
-  drawnow;
+%   plot(1:iter,err_inner,'b');
+%   hold on;
+%   drawnow;
   
   if ((iter>2)&&((max(0,norm(DG,2)/norm(DG_init,2))< 10e-06)||(err_inner(iter)>err_inner(iter-2))))
       break;
@@ -52,7 +52,7 @@ fprintf(' At final B iteration || Error: %f \n',error_compute_NL(corr,B_upd,C,K,
 
 
 %% C update
-sigma =sqrt(1);
+
 fprintf('Optimise C \n')
 % update coefficients
 % quadratic prog solver: x = quadprog(H,f,A,b)
@@ -65,10 +65,10 @@ fprintf(' Step C || Error: %f \n',error_compute_NL(corr,B_upd,C_upd,K,Y,D,lamb,l
 
 %% Compute Kernel
 
-K_upd = compute_kernel(C,sigma);
+K_upd = compute_kernel(C_upd,sigma);
 fprintf(' Rank of Kernel Matrix: %d \n', rank(K_upd))
 
-fprintf(' Step W || Error: %f \n',error_compute_NL(corr,B_upd,C,K_upd,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
+fprintf(' Step W || Error: %f \n',error_compute_NL(corr,B_upd,C_upd,K_upd,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,1));
 
 
 %% Dn's and lambda matrix update

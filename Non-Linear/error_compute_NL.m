@@ -25,7 +25,7 @@ for n = 1:size(corr,1)
     %Compute error for kernel ridge reg. flag
     if (flag)
         
-        sigma =sqrt(1);
+        
         alpha = pinv(K+(lambda_3/lambda)*eye(size(C,2)))*Y;        
         
         for j = 1:size(corr,1)

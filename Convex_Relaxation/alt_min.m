@@ -56,7 +56,7 @@ fprintf('Optimise C \n')
 
 % quadratic prog solver: x = quadprog(H,f,A,b)
 C_upd = zeros(size(C));
-for m = 1:size(corr,1)
+parfor m = 1:size(corr,1)
    
     H = diag(diag(B_upd'*B_upd)) + 2*(lambda*(W*W')+ 2*lambda_2* eye(size(B_upd'*B_upd)));
     
@@ -79,39 +79,22 @@ fprintf(' Step C || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W,D,lamb,lamb
 %% W update
 % epsil = 10e-06;
 fprintf('Optimise W \n')
+
+if  (lambda~=0)
 W_upd = ((C_upd*C_upd')+(lambda_3/lambda)*eye(size(C*C')))\(C_upd*Y);
+else
+W_upd = zeros(size(B_upd,2),1);
+end
+
+
 fprintf(' Step W || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D,lamb,lambda,lambda_1,lambda_2,lambda_3));
 
 %% Dn's and lambda matrix update
-fprintf('Optimise D \n')
-D_upd = zeros(size(D));
-lamb_upd = zeros(size(lamb));
-for k= 1:size(lamb,1)
-        
-     Corr_k = reshape(corr(k,:,:),[size(corr,2),size(corr,3)]);
-     lamb_k =reshape(lamb(k,:,:),[size(lamb,2),size(lamb,3)]);
-     
-     for c=1:num_iter_max
-               
-        D_k = (B_upd*diag(C_upd(:,k))+ 2*Corr_k*B_upd - lamb_k)*pinv(eye(size(B_upd'*B_upd))+2*(B_upd'*B_upd));
-        lamb_k = lamb_k + (0.5^(c-1))*lr1*(D_k - B_upd*diag(C_upd(:,k)));
-        
-        if (c ==1)
-            grad_norm_init = norm(D_k - B_upd*diag(C_upd(:,k)),2);
-        end
-        
-        if (norm(D_k - B_upd*diag(C_upd(:,k)),2)/grad_norm_init<10e-06)
-           break;
-        end
-        %lr1=lr1*0.5;
-        
-     end
-     
-     lamb_upd(k,:,:)= lamb_k;
-     D_upd(k,:,:) =D_k;
-     
-end
-fprintf(' Step D || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
+fprintf('Optimise D and lambda \n')
+
+[D_upd,lamb_upd] = Proximal_Updates(corr,B_upd,C_upd,lamb,lr1);
+
+fprintf(' Step D/lamb || Error: %f \n',error_compute(corr,B_upd,C_upd,Y,W_upd,D_upd,lamb_upd,lambda,lambda_1,lambda_2,lambda_3));
        
 end
      

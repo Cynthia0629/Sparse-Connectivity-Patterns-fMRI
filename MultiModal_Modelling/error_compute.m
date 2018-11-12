@@ -11,8 +11,8 @@ for n = 1:size(corr,1)
     lamb_n = reshape(lamb(n,:,:),[size(lamb,2),size(lamb,3)]);
     Q_n = reshape(Q(n,:,:),[size(Q,2),size(Q,3)]);
     
-    X = reshape((corr(n,:,:)),[size(corr,2),size(corr,3)]) -D_n*B'; 
-    fit_err = fit_err + norm(Q_n.*X,'fro').^2;
+    X = reshape((corr(n,:,:)),[size(corr,2),size(corr,3)]) -Q_n.*(D_n*B'); 
+    fit_err = fit_err + norm(X,'fro').^2;
     
     const_err = const_err + trace(lamb_n'*(D_n-B*diag(C(:,n))));
     aug_lag_err = aug_lag_err +0.5*norm((D_n-B*diag(C(:,n))),'fro').^2;

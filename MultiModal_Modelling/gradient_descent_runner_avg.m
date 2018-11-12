@@ -2,7 +2,7 @@ function [B,B_avg,C,W,D,lamb] = gradient_descent_runner_avg(corr,B_init,B_avg_in
 %%runs gradient descent using alternating minimisation
 
 %Initilise
-num_iter =400;
+num_iter =200;
 B_old = B_init;
 B_avg_old = B_avg_init;
 C_old = C_init;
@@ -33,7 +33,7 @@ thresh = 10e-04;
             %lambda_1 = lambda_1*1.05;
            lr2 = lr1*0.5;
            if (i>20)
-            lr2 = lr1*0.25;
+            lr2 = lr1*0.5;
            end
            [B,B_avg,C,D,W,lamb] = alt_min_avg(corr,B_old,B_avg_old,C_old,W_old,D_old,lamb_old,Q,Y,lambda,lambda_1,lambda_2,lambda_3,lr2); 
         end

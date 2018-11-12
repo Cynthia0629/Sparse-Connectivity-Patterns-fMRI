@@ -1,27 +1,26 @@
 %% Testing
 
-fold =15;
+fold =5;
 
 % st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Convex_Relaxation/SCI_m_CV/Reg_116/Non_Avg/';
 
 % load(strcat(st,'/data_out_',num2str(fold),'.mat'))
 
-str1 = strcat(st,'/workspace_out_',num2str(net),'_net_',num2str(fold),'_fold_',num2str(lambda_1),'_sparsity_'...
+str1 = strcat(st,'/workspace_out_',num2str(net),'_net_',num2str(lambda_1),'_sparsity_'...
     ,num2str(lambda_2),'_regC_',num2str(lambda_3),'_regW_',num2str(lambda),'_trad');
 filename_final=str1;
 load(strcat(str1,'.mat'))
 my_string  = strcat(filename_final,'_test',num2str(fold),'.mat');
 
-for i = 1:size(B_gd,2)
+parfor i = 1:size(B_gd,2)
 
-    C_gd_test{i}= quad_estimate_C_old(B_gd{i},lambda_2,corr_test{i});
-    C_gd_train{i}= quad_estimate_C_old(B_gd{i},lambda_2,corr_train{i});
+    C_gd_test{i}= quad_estimate_C_multimodal_avg(B_gd{i},B_avg_gd{i},lambda_2,corr_test{i},Q_test{i});
+    C_gd_train{i}= quad_estimate_C_multimodal_avg(B_gd{i},B_avg_gd{i},lambda_2,corr_train{i},Q_train{i});
  
      Y_obt_train{i} = (C_gd{i})'*W_gd{i};
      Y_est_train{i} = (C_gd_train{i})'*W_gd{i};
      Y_obt_test{i} = (C_gd_test{i})'*W_gd{i};
      
-
      Y_obt_train{i} = (Y_obt_train{i})*(1/scale)-offs;
      Y_train{i} = (Y_train{i})*(1/scale)-offs;
      Y_est_train{i} = (Y_est_train{i})*(1/scale) -offs;

@@ -1,8 +1,8 @@
-function [B,C,K,D,lamb] = gradient_descent_runner_NL(corr,B_init,C_init,K_init,D_init,Y,lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1)
+function [B,C,K,D,lamb] = gradient_descent_runner_NL(corr,B_init,C_init,K_init,D_init,Y,lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma)
 %%runs gradient descent using alternating minimisation
 
 %Initilise
-num_iter =100;
+num_iter =200;
 B_old = B_init;
 C_old = C_init;
 K_old = K_init;
@@ -13,27 +13,27 @@ thresh = 10e-04;
 
     %Iterate
     err_out =[];
-    plot(0,0)
-    title('Gradent Descent Run ')
-    xlabel('Number of iterations')
-    ylabel('Value of obejctive function')
+%     plot(0,0)
+%     title('Gradent Descent Run ')
+%     xlabel('Number of iterations')
+%     ylabel('Value of obejctive function')
 
     for i = 1:num_iter
         
         err_out= horzcat(err_out,error_compute_NL(corr,B_old,C_old,K_old,Y,D_old,lamb_old,lambda,lambda_1,lambda_2,lambda_3,1));
         fprintf(' At iteration %d || Error: %f \n',i,err_out(i))
-        plot(1:i,err_out,'r');
-        hold on;
-        drawnow;
+%         plot(1:i,err_out,'r');
+%         hold on;
+%         drawnow;
         
-        if (i<5)
+        if (i<10)
         
-           [B,C,K,D,lamb] = alt_min_NL(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
+           [B,C,K,D,lamb] = alt_min_NL(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma); 
         
         else
            % scale the learning for the constraints
            lr2 = 0.5*lr1;
-           [B,C,K,D,lamb] = alt_min_NL(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr2); 
+           [B,C,K,D,lamb] = alt_min_NL(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr2,sigma); 
         end
         
         % divergence check
@@ -55,7 +55,7 @@ thresh = 10e-04;
         lamb_old =lamb;
         
         % exit conditions
-        if (i>1 && (abs((err_out(i)-err_out(i-1))) < thresh || (err_out(i)>err_out(i-1))))
+        if (i>1 && (abs((err_out(i)-err_out(i-1))) < thresh || (err_out(i)-err_out(i-1)>1)))
            if(err_out(i)>err_out(i-1))
                fprintf('\n Exiting due to increase in function value, at iter %d \n',i)
            end

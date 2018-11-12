@@ -2,7 +2,7 @@ function [B,C,W,D,lamb] = gradient_descent_runner(corr,B_init,C_init,W_init,D_in
 %%runs gradient descent using alternating minimisation
 
 %Initilise
-num_iter =200;
+num_iter =250;
 B_old = B_init;
 C_old = C_init;
 D_old = D_init;
@@ -30,6 +30,7 @@ thresh = 10e-04;
            [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
         else
             %lambda_1 = lambda_1*1.05;
+            lr1=lr1*0.75;
            [B,C,D,W,lamb] = alt_min(corr,B_old,C_old,W_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1); 
         end
         
@@ -49,9 +50,14 @@ thresh = 10e-04;
         W_old =W;
         lamb_old =lamb;
     
-        if (i>1 && (abs((err_out(i)-err_out(i-1))) < thresh || (err_out(i)>err_out(i-1))))
+        if (i>1 && (abs((err_out(i)-err_out(i-1))) < thresh || (err_out(i)-err_out(i-1)>10)))
            
-           break;
+            if (err_out(i)>err_out(i-1))
+               fprintf('Exiting due to increase in function value')
+            end
+            
+            break;
+        
         end
     
     end

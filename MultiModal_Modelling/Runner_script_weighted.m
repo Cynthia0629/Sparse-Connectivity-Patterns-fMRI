@@ -8,18 +8,19 @@ my_path = strcat('/Real_Data_DTI_fMRI_all');
 
 load(strcat(my_folder,my_path,'.mat'))
 
-corr = F_corr;
+
 if (thresh_fl)
 Q = double(A_conn>thresh);
 else
 Q = A_conn.*double(A_conn>thresh);
 end
+corr = F_corr.*Q;
 
 %parameters
 lr1 = 0.001; 
 lambda =0;
 lambda_3 =0;
-net=7;
+net=8;
 
 m= size(corr,2);
 
@@ -44,13 +45,11 @@ if (avg_fl)
     
     if(thresh_fl)
         
-       filename = strcat(my_folder,'/Training_runs/Avg/Binary/','Thresh_',num2str(thresh),'/workspace_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat'); 
-       save(filename)
+       save(strcat(my_folder,'/Training_runs/Avg/Binary/','Thresh_',num2str(thresh),'/workspace_w_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat'))
     
     else
     
-       filename= strcat(my_folder,'/Training_runs/Avg/Values/','Thresh_',num2str(thresh),'/workspace_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat');
-       save(filename)
+       save(strcat(my_folder,'/Training_runs/Avg/Values/','Thresh_',num2str(thresh),'/workspace_w_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat'))
     
     end
     
@@ -59,16 +58,13 @@ else
     [B_gd,C_gd,W_gd,D_gd,lamb_gd] = gradient_descent_runner(corr,B_init,C_init,W_init,D_init,Y,lamb_init,Q,lambda,lambda_1,lambda_2,lambda_3,lr1);
 
     if(thresh_fl)
-       
-        filename= strcat(my_folder,'/Training_runs/Non_Avg/Binary/','Thresh_',num2str(thresh),'/workspace_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat');
-        save(filename)
+        
+       save(strcat(my_folder,'/Training_runs/Non_Avg/Binary/','Thresh_',num2str(thresh),'/workspace_w_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat'))
     
     else
-       
-       filename = strcat(my_folder,'/Training_runs/Non_Avg/Values/','Thresh_',num2str(thresh),'/workspace_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat');
-       save(filename)
+    
+       save(strcat(my_folder,'/Training_runs/Non_Avg/Values/','Thresh_',num2str(thresh),'/workspace_w_out_net_',num2str(net),'_sparsity_',num2str(lambda_1),'_regC_',num2str(lambda_2),'_regW_',num2str(lambda_3),'_trad_',num2str(lambda),'_out.mat'))
     
     end
     
 end
-
