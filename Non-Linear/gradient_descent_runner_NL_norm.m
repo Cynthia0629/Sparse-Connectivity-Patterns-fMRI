@@ -1,4 +1,4 @@
-function [B,C,K,D,lamb] = gradient_descent_runner_NL(corr,B_init,C_init,K_init,D_init,Y,lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma,w_p,p)
+function [B,C,K,D,lamb] = gradient_descent_runner_NL_norm(corr,B_init,C_init,K_init,D_init,Y,lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma,w_p)
 %%runs gradient descent using alternating minimisation
 
 %Initilise
@@ -25,17 +25,17 @@ thresh = 10e-04;
 %         hold on;
 %         drawnow;
         
-        if (i<10)
+        if (i<20)
         
-           [B,C,K,D,lamb] = alt_min_NL(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma,w_p,p); 
+           [B,C,K,D,lamb] = alt_min_NL_norm(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma,w_p); 
         
         else
            % scale the learning for the constraints
            lr2 = 0.5*lr1;
-           [B,C,K,D,lamb] = alt_min_NL(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr2,sigma,w_p,p); 
+           [B,C,K,D,lamb] = alt_min_NL_norm(corr,B_old,C_old,K_old,D_old,lamb_old,Y,lambda,lambda_1,lambda_2,lambda_3,lr2,sigma,w_p); 
         end
         
-        err_out= horzcat(err_out,error_compute_NL(corr,B,C,C,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,sigma,w_p,p,0));
+        err_out= horzcat(err_out,error_compute_NL_norm(corr,B,C,C,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,sigma,w_p,0));
         fprintf(' At iteration %d || Error: %f \n',i,err_out(i))
         
         % divergence check

@@ -1,4 +1,4 @@
-function C_upd = Coefficient_Updates_NL(corr,B_upd,C,Y,D,lamb,alpha,lambda,lambda_2,sigma)
+function C_upd = Coefficient_Updates_NL(corr,B_upd,C,Y,D,lamb,alpha,lambda,lambda_2,sigma,w_p,p)
 %%updates for coefficient- inputs to the kernel ridge regression
 
 % initialisation
@@ -84,14 +84,14 @@ parfor m = 1:size(corr,1)
     
     %Calls to fmincon
     options = optimoptions('fmincon','Algorithm','trust-region-reflective','SpecifyObjectiveGradient',true);
-    C_m_old = fmincon([@(C_pat)obj_func_c(C_pat,C,B_upd,y,D_m,lamb_m,alpha,sigma,lambda,lambda_2)],C_0,[],[],[],[],lb,ub,[],options);
+    C_m_old = fmincon([@(C_pat)obj_func_c(C_pat,C,B_upd,y,D_m,lamb_m,alpha,sigma,w_p,p,lambda,lambda_2)],C_0,[],[],[],[],lb,ub,[],options);
     C_upd(:,m) = C_m_old;
     
 end
 
 end     
 
-function [F,G] = obj_func_c(C_pat,C,B_upd,y,D_m,lamb_m,alpha,sigma,lambda,lambda_2)
+function [F,G] = obj_func_c(C_pat,C,B_upd,y,D_m,lamb_m,alpha,sigma,w_p,p,lambda,lambda_2)
 
     y_val =0;
 
@@ -103,7 +103,7 @@ function [F,G] = obj_func_c(C_pat,C,B_upd,y,D_m,lamb_m,alpha,sigma,lambda,lambda
     % kernel function expansion contributions
     for i= 1:size(C,2)
            
-        [F_i,J_i] = Ker_NL(C_pat,C(:,i),sigma);
+        [F_i,J_i] = Ker_NL(C_pat,C(:,i),sigma,w_p,p);
     
         y_val= y_val + alpha(i)*F_i;
         % self terms
@@ -114,7 +114,7 @@ function [F,G] = obj_func_c(C_pat,C,B_upd,y,D_m,lamb_m,alpha,sigma,lambda,lambda
         % cross terms
             if (i~=k)
           
-                [F_k,J_k] = Ker_NL(C_pat,C(:,k),sigma);
+                [F_k,J_k] = Ker_NL(C_pat,C(:,k),sigma,w_p,p);
                 grad_C_m = grad_C_m + lambda*alpha(i)*alpha(k)*(F_k*J_i+F_i*J_k);
             end
         

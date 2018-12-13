@@ -1,4 +1,4 @@
-function K = compute_kernel(C,sigma)
+function K = compute_kernel(C,sigma,w_p,p)
 %compute kernel matrix K
 
 N = size(C,2);
@@ -10,7 +10,7 @@ for i= 1:N
         c_i = C(:,i);
         c_j = C(:,j);
         
-        [K(i,j),~] = Ker_NL(c_j,c_i,sigma);
+        [K(i,j),~] = Ker_NL(c_j,c_i,sigma,w_p,p);
         K(j,i) =K(i,j);
         
     end

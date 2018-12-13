@@ -1,4 +1,4 @@
- function err = error_compute_NL(corr,B,C,C_bar,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,sigma,w_p,p,flag)
+ function err = error_compute_NL_norm(corr,B,C,C_bar,K,Y,D,lamb,lambda,lambda_1,lambda_2,lambda_3,sigma,w_p,flag)
 %%Computes the error at the current interation given the values of the iterates at the instant
 
 fit_err = 0;
@@ -31,7 +31,7 @@ for n = 1:size(corr,1)
         %compute kernel contributions for nth score estimation based on flag
         if (flag)
             
-            [F_j,~] = Ker_NL(C(:,n),C_bar(:,j),sigma,w_p,p);
+            [F_j,~] = Ker_NL(C(:,n),C_bar(:,j),sigma,w_p);
         
         else
             
@@ -50,6 +50,6 @@ for n = 1:size(corr,1)
 end
 
 %total error
-err = fit_err + const_err + aug_lag_err + lambda_1* norm(B,1) + lambda* norm(est_Y-Y).^2 + lambda_2* norm(C,'fro').^2+ lambda_3*err_W_reg;
+err = fit_err/n + const_err + aug_lag_err + lambda_1* norm(B,1) + lambda* norm(est_Y-Y).^2 + lambda_2* norm(C,'fro').^2+ lambda_3*err_W_reg;
 
 end

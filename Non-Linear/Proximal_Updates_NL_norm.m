@@ -1,4 +1,4 @@
-function [D_upd,lamb_upd] = Proximal_Updates_NL(corr,lamb,B_upd,C_upd,lr)
+function [D_upd,lamb_upd] = Proximal_Updates_NL_norm(corr,lamb,B_upd,C_upd,lr)
 %%Updates the proximal variables D and lamb 
 num_iter_max = 100;
 
@@ -10,7 +10,7 @@ parfor k= 1:size(lamb,1)
      for c=1:num_iter_max
                
        %closed form update for the kth constriant 
-       D_k = (B_upd*diag(C_upd(:,k))+ 2*Corr_k*B_upd - lamb_k)*pinv(eye(size(B_upd'*B_upd))+2*(B_upd'*B_upd));
+       D_k = (B_upd*diag(C_upd(:,k))+ 2*Corr_k*B_upd/size(corr,1) - lamb_k)*pinv(eye(size(B_upd'*B_upd))+2*(B_upd'*B_upd)/size(corr,1));
          
        %gradient ascent for the kth lagrangian
        lamb_k = lamb_k + (0.75^(c-1))*lr*(D_k - B_upd*diag(C_upd(:,k)));

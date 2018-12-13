@@ -1,13 +1,13 @@
 %% Testing
 
-fold=10;
+fold=15;
 
 % st = '/work-zfs/avenka14/Sparse-Connectivity-Patterns-fMRI/Non-Linear/SCI_m_CV';
 
 % load(strcat(st,'/data_out_',num2str(fold),'.mat'))
 
-str1 = strcat(st,'/workspace_out_',num2str(net),'_net_',num2str(fold),'_fold_',num2str(lambda_1),'_sparsity_'...
-    ,num2str(lambda_2),'_regC_',num2str(lambda_3),'_regW_',num2str(lambda),'_trad_',num2str(sigma^2),'_ker');
+str1 = strcat(st,'/workspace_frac_',num2str(net),'_net_',num2str(fold),'_fold_',num2str(lambda_1),'_sparsity_'...
+    ,num2str(lambda_2),'_regC_',num2str(lambda_3),'_regW_',num2str(lambda),'_trad_',num2str(sigma^2),'_ker_',num2str(w_p),'_w_p_',num2str(p),'_ord');
 fin =str1;
 filename_NL = dir([str1 '/*.mat']);
 
@@ -26,16 +26,16 @@ for i = 1:size(filename_NL)
     C_gd_test{i} = quad_estimate_C_old(B_gd{i},lambda_2,corr_test{i});
     C_gd_train{i}= quad_estimate_C_old(B_gd{i},lambda_2,corr_train{i});
  
-     Y_obt_train{i} =  Compute_Scores(C_gd{i},C_gd{i},K_gd{i},Y_train{i},lambda_3,lambda,corr_train{i},sigma);
-     Y_est_train{i} = Compute_Scores(C_gd_train{i},C_gd{i},K_gd{i},Y_train{i},lambda_3,lambda,corr_train{i},sigma);
-     Y_obt_test{i} = Compute_Scores(C_gd_test{i},C_gd{i},K_gd{i},Y_train{i},lambda_3,lambda,corr_test{i},sigma);
+    Y_obt_train{i} =  Compute_Scores(C_gd{i},C_gd{i},K_gd{i},Y_train{i},lambda_3,lambda,corr_train{i},sigma,w_p,p);
+    Y_est_train{i} = Compute_Scores(C_gd_train{i},C_gd{i},K_gd{i},Y_train{i},lambda_3,lambda,corr_train{i},sigma,w_p,p);
+    Y_obt_test{i} = Compute_Scores(C_gd_test{i},C_gd{i},K_gd{i},Y_train{i},lambda_3,lambda,corr_test{i},sigma,w_p,p);
      
 %    offs =-20;
-     Y_obt_train{i} = (Y_obt_train{i})*(1/scale)-offs;
-     Y_train{i} = (Y_train{i})*(1/scale)-offs;
-     Y_est_train{i} = (Y_est_train{i})*(1/scale) -offs;
-     Y_obt_test{i} = (Y_obt_test{i})*(1/scale) -offs;
-     Y_test{i} = (Y_test{i})*(1/scale)-offs;
+    Y_obt_train{i} = (Y_obt_train{i})*(1/scale)-offs;
+    Y_train{i} = (Y_train{i})*(1/scale)-offs;
+    Y_est_train{i} = (Y_est_train{i})*(1/scale) -offs;
+    Y_obt_test{i} = (Y_obt_test{i})*(1/scale) -offs;
+    Y_test{i} = (Y_test{i})*(1/scale)-offs;
      
     error_test(i) = sqrt(sum((Y_obt_test{i}(:)-Y_test{i}(:)).^2)/numel(Y_test{i}));
     error_train(i) = sqrt(sum((Y_obt_train{i}(:)-Y_train{i}(:)).^2)/numel(Y_train{i}));

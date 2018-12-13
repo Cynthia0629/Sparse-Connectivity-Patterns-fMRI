@@ -1,4 +1,4 @@
-clearvars -except net fold lambda_2 lambda_1 lambda_3 lambda offs_A offs_S scale_A scale_S scale st offs scale st cvf ker w_p p
+clearvars -except net fold lambda_2 lambda_1 lambda_3 lambda offs_A offs_S scale_A scale_S scale st offs scale st cvf ker w_p
 
 filename = strcat(st,'/data_',num2str(fold),'.mat');
 filename1 = strcat(st,'/data_out_',num2str(fold),'.mat');
@@ -46,7 +46,7 @@ for i = cvf
    D_init = initD(B_init,C_init);
    
    
-   K_init = compute_kernel(C_init,sigma,w_p,p);
+   K_init = compute_kernel(C_init,sigma,w_p);
 
     Y_train{i} = Y_train{i} + offs*ones(size(Y_train{i}));
     Y_train{i} = Y_train{i}.* scale;
@@ -54,20 +54,21 @@ for i = cvf
     Y_test{i} = Y_test{i} + offs* ones(size(Y_test{i}));
     Y_test{i} = Y_test{i}.* scale;
    
+  
 
    fprintf('\n Fold: %d, sparsity penalty : %f; networks: %d \n',i,lambda_1,net)
-   fprintf('\n tradeoff penalty: %f, C penalty : %f; W penalty: %f ,ker : %f, poly %f , order %f  \n',lambda,lambda_2,lambda_3, ker,w_p,p)
-      
+   fprintf('\n tradeoff penalty: %f, C penalty : %f; W penalty: %f ,ker : %f, poly %f \n',lambda,lambda_2,lambda_3, ker,w_p)
+    
 %       [B_gd{i},B_avg_gd{i},C_gd{i},W_gd{i},D_gd{i},lamb_gd{i}]  = gradient_descent_runner_avg(corr_train{i},B_init,B_avg_init,C_init,W_init,D_init,Y_train{i},lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1);
-   [B_gd_cv,C_gd_cv,K_gd_cv,D_gd_cv,lamb_gd_cv]  = gradient_descent_runner_NL(corr_train{i},B_init,C_init,K_init,D_init,Y_train{i},lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma,w_p,p);
+   [B_gd_cv,C_gd_cv,K_gd_cv,D_gd_cv,lamb_gd_cv]  = gradient_descent_runner_NL_norm(corr_train{i},B_init,C_init,K_init,D_init,Y_train{i},lamb_init,lambda,lambda_1,lambda_2,lambda_3,lr1,sigma,w_p);
 
- 
+
 
 end
 
 
 
-str1 = strcat(st,'/workspace_frac_',num2str(net),'_net_',num2str(fold),'_fold_',num2str(lambda_1),'_sparsity_',num2str(lambda_2),'_regC_',num2str(lambda_3),'_regW_',num2str(lambda),'_trad_',num2str(sigma^2),'_ker_',num2str(w_p),'_w_p_',num2str(p),'_ord/');
+str1 = strcat(st,'/workspace_norm_',num2str(net),'_net_',num2str(fold),'_fold_',num2str(lambda_1),'_sparsity_',num2str(lambda_2),'_regC_',num2str(lambda_3),'_regW_',num2str(lambda),'_trad_',num2str(sigma^2),'_ker_',num2str(w_p),'_w_p/');
 
 if exist(str1,'dir')
    cd(str1) 
@@ -83,5 +84,3 @@ save(str2)
 toc;
 
 cd ..
-
-% test_script_NL;
